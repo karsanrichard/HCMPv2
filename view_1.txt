@@ -1,0 +1,35 @@
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `facility_stock_movement_order_summary` AS  
+select `c`.`facility_code` AS `facility_code`,
+`a`.`sub_category_name` AS `sub_category_name`,
+`b`.`commodity_name` AS `commodity_name`,
+`b`.`unit_size` AS `unit_size`,
+`b`.`unit_cost` AS `unit_cost`,
+`b`.`commodity_code` AS `commodity_code`,
+`b`.`id` AS `commodity_id`,
+<<<<<<< HEAD
+`b`.`total_commodity_units`as `total_commodity_units`,
+=======
+>>>>>>> 112aeab2173cefcfa5aea7cf64c14b008f777034
+`c`.`opening_balance` AS `opening_balance`,
+`c`.`total_receipts` AS `total_receipts`,
+`c`.`total_issues` AS `total_issues`,
+`c`.`quantity_ordered` AS `quantity_ordered`,
+`c`.`comment` AS `comment`,
+ceiling((`c`.`closing_stock` / `b`.`total_commodity_units`)) AS `closing_stock_`,
+`c`.`closing_stock` AS `closing_stock`,
+`c`.`days_out_of_stock` AS `days_out_of_stock`,
+`c`.`date_added` AS `date_added`,
+`c`.`losses` AS `losses`,
+`c`.`status` AS `status`,
+`c`.`adjustmentpve` AS `adjustmentpve`,
+`c`.`adjustmentnve` AS `adjustmentnve`,
+ifnull(ceiling(sum((`h`.`total_units` / `b`.`total_commodity_units`))),0) AS `historical` 
+from ((`commodities` `b` join `commodity_sub_category` `a` ) 
+join (`facility_transaction_table` `c`
+left join `facility_monthly_stock` `h` on(((`h`.`facility_code` = `c`.`facility_code`) 
+and (`h`.`commodity_id` = `c`.`commodity_id`)))))
+ where ((`b`.`id` = `c`.`commodity_id`) 
+and (`c`.`status` = '1') and (`a`.`id` = `b`.`commodity_sub_category_id`))
+ group by `c`.`facility_code`,
+`c`.`commodity_id` 
+order by `a`.`sub_category_name` desc;
