@@ -661,7 +661,7 @@ class Reports extends MY_Controller
         $this -> load -> view($view, $data);
 	}
 
-	public function stock_control($facility_code=null) {
+	public function stock_control($facility_code=null) {//seth
 		$facility_code=isset($facility_code) ? $facility_code: $this -> session -> userdata('facility_id');
 		$facility_name=Facilities::get_facility_name_($facility_code)->toArray();
 		$data['facility_name']=$facility_name[0]['facility_name'];
@@ -680,7 +680,7 @@ class Reports extends MY_Controller
 		$commodity_id = $_POST['commodity_select'];
 		$to = $_POST['to'];
 		$from = $_POST['from'];
-
+		// karsan
 
 		//to enable pdf download
 		$data['commodity_id'] =$commodity_id;
@@ -2996,7 +2996,6 @@ public function division_commodities_stock_level_graph($district_id=NULL, $count
 
    public function stock_level_dashboard()
    {
-   	//seth
    		$tracer =(isset($tracer))? $tracer:null ;
       	$commodity_id = ($commodity_id=="NULL") ? null :$commodity_id;
 	 	$district_id = ($district_id=="NULL") ? null :$district_id;
@@ -3674,7 +3673,6 @@ public function get_division_commodities_data($district_id = null, $facility_cod
          	
          }
 	     public function actual_expiries_reports($county_id,$year){
-	     //seth
 	     $district_id = $this -> session -> userdata('district_id');
 	     $dist_id = isset($district_id)? $district_id: null;
 		 $expiries_array=Facility_stocks::get_county_expiries($county_id,$year,$dist_id);

@@ -1,4 +1,4 @@
-
+<?php //echo "<pre>";print_r($malaria);echo "</pre>";exit; ?>
 <style type="text/css">
 .table-bordered{border: 1px solid #FFF !important;}
 .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
