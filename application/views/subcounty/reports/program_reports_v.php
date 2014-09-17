@@ -6,9 +6,6 @@
 	.page-header{
 		border:none;
 	}
-	.table-bordered{border: 1px solid #FFF !important;}
-	.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
-		border: 1px solid #FFF !important;
 	}
 </style>
 <?php   $identifier = $this -> session -> userdata('user_indicator');
@@ -123,7 +120,7 @@ HTML_DATA;
     </ul>
     <div id="myTabContent" class="tab-content">
  		<div  id="Malaria" class="tab-pane fade active in">
-	        <!-- <table width="100%" border="0" class="row-fluid table table-hover table-bordered table-update"  id="test1">
+	        <table width="100%" border="0" class="row-fluid table table-hover table-bordered table-update"  id="test1">
 			<thead>
 				
 				<tr>
@@ -138,62 +135,18 @@ HTML_DATA;
 				</tr>
 				
 			</thead>
-			<tbody> -->
+			<tbody>
 				<?php 
 				
-				//echo $malaria_report_data; 
+				echo $malaria_report_data; 
 					
 				?>
+				</tbody>
+				</table>
+    </div> 
 
-<?php 
-// echo "<pre>";print_r($facility_code);echo "</pre>";exit;
-   //$link = base_url('reports/get_facility_bin_card_pdf/'.'/'.$facility_code.'/'.$commodity_id.'/'.$from.'/'.$to); 
- ?>
-       <!--  <div class="button">
-                <a href= <?php //echo $link; ?> target="_blank">
-                <button type="button" class="btn btn-default">
-                Download PDF<span class="glyphicon glyphicon-download"></span>
-                </button>
-                </a>
-         </div> -->
-	 <div style="min-height: 400px; background:#edc1d8">
-		  <img style="align-content: center;margin-left: 46%; border:0 none;" src="<?php echo base_url();?>assets/img/coat_of_arms-resized1.png" class="img-responsive " alt="Responsive image">
-	        <div id="" style="text-align: center; ">
-	          <span style="font-size: 0.95em;font-weight: bold; ">Ministry of Health</span><br />
-	          <span style="font-size: 0.9em;">Health Commodities Management Platform (HCMP)</span> 
-	        </div>
-		  <table  class="table table-bordered table-update" id="" style="text-transform:capitalize">
-			  
-			  <thead style="">
-			  <tr>
-					<th>Facility Name</th>
-					<th>Prepared By:</th>
-					<th>Report Date</th>
-					<th>Action <a href='<?php //echo $link_new_report_malaria;?>'>
-							<button  type='button' class='btn btn-xs btn-primary'style="float: right">
-		           			<span class='glyphicon glyphicon-floppy-disk'></span>Submit Malaria Report</button>
-		           			  </a>
-		           	</th>
-			  </tr>
-			  </thead>  
-
-		    <tbody>   
-		        
-		            <tr style="color:<?php echo $color;?> " >
-		   			<?php echo $malaria_report_data; ?>
-		   			</tr>
-		   </tbody>
-
-		</table>
-	  </div>
-			</tbody>
-			
-			</table> 
-						
-		    
-      </div>
      <div class="tab-pane fade" id="RH">
-       <!--  <table cellpadding="0" cellspacing="0" width="100%" border="0" class="row-fluid table table-bordered"  id="test2">
+       <table cellpadding="0" cellspacing="0" width="100%" border="0" class="row-fluid table table-bordered"  id="test2">
 		<thead>
 			<tr>
 				<th>Facility Name</th>
@@ -207,49 +160,13 @@ HTML_DATA;
 			</tr>
 		</thead>
 		<tbody>
-		<tr style="color:<?php echo $color;?> " >
 			<?php echo $RH_report_details;?>
 
 		</tbody>
-		</table>  -->
-
-		<div style="min-height: 400px; background:#edc1d8">
-		  <img style="align-content: center;margin-left: 46%; border:0 none;" src="<?php echo base_url();?>assets/img/coat_of_arms-resized1.png" class="img-responsive " alt="Responsive image">
-	        <div id="" style="text-align: center; ">
-	          <span style="font-size: 0.95em;font-weight: bold; ">Ministry of Health</span><br />
-	          <span style="font-size: 0.9em;">Health Commodities Management Platform (HCMP)</span> 
-	        </div>
-		  <table  class="table table-bordered table-update" id="" style="text-transform:capitalize">
-			  
-			  <thead style="">
-			  <tr>
-					<th>Facility Name</th>
-					<th>Prepared By:</th>
-					<th>Report Date</th>
-					<th>Action <a href='<?php //echo $link_new_report_malaria;?>'>
-							<button  type='button' class='btn btn-xs btn-primary'style="float: right">
-		           			<span class='glyphicon glyphicon-floppy-disk'></span>Submit Malaria Report</button>
-		           			  </a>
-		           	</th>
-			  </tr>
-			  </thead>  
-
-		    <tbody>   
-		        
-		            <tr style="color:<?php echo $color;?> " >
-		   			<?php echo $RH_report_details; ?>
-		   			</tr>
-		   </tbody>
-
-		</table>
-	  </div>
-			</tbody>
-			
-			</table> 
-		           	
-      </div>
+		</table> 
+		</div>
      <div class="tab-pane fade" id="TB">
-       <!--  <table cellpadding="0" cellspacing="0" width="100%" border="0" class="row-fluid table table-bordered"  id="test2">
+        <table cellpadding="0" cellspacing="0" width="100%" border="0" class="row-fluid table table-bordered"  id="test2">
 		<thead>
 			<tr>
 				<th>Facility Name</th>
@@ -268,42 +185,8 @@ HTML_DATA;
 
 			 ?>
 		</tbody>
-		</table>  -->
-		
-		 <div style="min-height: 400px; background:#edc1d8">
-		  <img style="align-content: center;margin-left: 46%; border:0 none;" src="<?php echo base_url();?>assets/img/coat_of_arms-resized1.png" class="img-responsive " alt="Responsive image">
-	        <div id="" style="text-align: center; ">
-	          <span style="font-size: 0.95em;font-weight: bold; ">Ministry of Health</span><br />
-	          <span style="font-size: 0.9em;">Health Commodities Management Platform (HCMP)</span> 
-	        </div>
-		  <table  class="table table-bordered table-update" id="" style="text-transform:capitalize">
-			  
-			  <thead style="">
-			  <tr>
-					<th>Facility Name</th>
-					<th>Prepared By:</th>
-					<th>Report Date</th>
-					<th>Action <a href='<?php //echo $link_new_report_malaria;?>'>
-							<button  type='button' class='btn btn-xs btn-primary'style="float: right">
-		           			<span class='glyphicon glyphicon-floppy-disk'></span>Submit Malaria Report</button>
-		           			  </a>
-		           	</th>
-			  </tr>
-			  </thead>  
-
-		    <tbody>   
-		        
-		            <tr style="color:<?php echo $color;?> " >
-		   			<?php echo $TB_report_details; ?>
-		   			</tr>
-		   </tbody>
-
-		</table>
-	  </div>
-			</tbody>
-			
-			</table> 
-      </div>
+		</table> 
+		</div>
     </div>
  	</div>
   </div>
