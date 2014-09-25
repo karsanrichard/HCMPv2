@@ -287,14 +287,14 @@ $using_hcmp = Doctrine_Manager::getInstance() -> getCurrentConnection() -> fetch
 		
 	}
 
-		public function mos_graph($county_id=null, $district_id=null,$facility_code=null,$commodity_id=null,$graph_type=null)
+		public function mos_graph($county_id=null, $district_id=null,$facility_code=null,$commodity_id=null,$graph_type=null,$div=null)
 			{
 				
 				$district_id=($district_id=="NULL") ? null :$district_id;
 	    $graph_type=($graph_type=="NULL") ? null :$graph_type;
 	    $facility_code=($facility_code=="NULL") ? null :$facility_code;
 	    $county_id=($county_id=="NULL") ? null :$county_id;
-	    $commodity_id=($commodity_id=="ALL" || $commodity_id=="NULL") ? null :$commodity_id;
+		$commodity_id=($commodity_id=="ALL" || $commodity_id=="NULL") ? null :$commodity_id;
 	
 	    $and_data =($district_id>0) ?" AND d1.id = '$district_id'" : null;
 	    $and_data .=($facility_code>0) ?" AND f.facility_code = '$facility_code'" : null;
@@ -369,7 +369,7 @@ $using_hcmp = Doctrine_Manager::getInstance() -> getCurrentConnection() -> fetch
         $data['graph_type'] = 'bar';
         $data['graph_title'] = "$title Stock Level in Months of Stock (MOS)";
         $data['graph_yaxis_title'] = "MOS";
-        $data['graph_id'] = "mos";
+        $data['graph_id'] = $div;
         $data['legend'] = "M.O.S";
         $data['colors'] = "['#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']";
         $data['category_data'] = json_encode($category_data);
@@ -935,6 +935,144 @@ group by month(o.`order_date`)
         $this->hcmp_functions->create_excel($excel_data);
 endif;
 		}
+		
+		public function get_lead_infor($year=null,$county_id=null, $district_id=null,$facility_code=null,$graph_type=null){
+    $district_id=($district_id=="NULL") ? null :$district_id;
+    $graph_type=($graph_type=="NULL") ? null :$graph_type;
+    $facility_code=($facility_code=="NULL") ? null :$facility_code;
+    $county_id=($county_id=="NULL") ? null :$county_id;
+    $year=($year=="NULL") ? date('Y') :$year;
+    $and =($district_id>0) ?" AND d.id = '$district_id'" : null;
+    $and .=($facility_code>0) ?" AND f.facility_code = '$facility_code'" : null;
+    $and.=($county_id>0) ?" AND c.id='$county_id'" : null;
+   // $and =isset( $and) ?  $and:null;
+    $and .=($year>0) ?" and year(o.`order_date`) =$year" : null;
+
+    if($graph_type!="excel"):
+     $using_hcmp= Doctrine_Manager::getInstance()
+        ->getCurrentConnection()
+        ->fetchAll(" SELECT 
+   avg( ifnull(DATEDIFF(`approval_date`, `order_date`),0)) as tat_order_approval,
+   avg( ifnull(DATEDIFF(`deliver_date`,`approval_date`),0)) as tat_approval_delivery,
+   avg( ifnull(DATEDIFF( `deliver_date`,`order_date`),0)) as tat_order_delivery
+from
+    facility_orders o,
+    facilities f,
+    districts d,
+    counties c
+where
+    f.facility_code = o.facility_code
+        and f.district = d.id
+        and c.id = d.county
+      $and
+      ");
+
+ $one=$this->get_time($using_hcmp[0]['tat_order_approval']);
+ $two=$this->get_time($using_hcmp[0]['tat_approval_delivery']);
+ $three=$this->get_time( $using_hcmp[0]['tat_order_delivery']);
+      $table="
+  <table class='table table-bordered'>
+              <tr><td>Order Placement - Order Approval</td><td>$one</td></tr>
+               <tr><td>Order Approval - Order Delivery</td><td>$two</td></tr>
+                <tr><td>Order Placement - Order Delivery</td><td>$three</td></tr>
+          </table> 
+";
+        echo $table;
+               else:
+              
+        $excel_data = array('doc_creator' => "HCMP", 'doc_title' => "Order Lead Time",
+         'file_name' => "Order Lead Time");
+        $row_data = array(); 
+        $column_data = array("Date of Order Placement","Date of Order Approval","Total Order Cost (Ksh)",
+        "Date of Delivery","Lead Time (Order Placement to Delivery)",
+        "Supplier","Facility Name","Facility Code","Sub-County","County");
+        $excel_data['column_data'] = $column_data;
+       //echo  ; exit;
+       $facility_stock_data = Doctrine_Manager::getInstance()
+        ->getCurrentConnection()
+        ->fetchAll("SELECT c.county,d.district as sub_county, f.facility_name, f.facility_code, 
+        DATE_FORMAT(`order_date`,'%d %b %y') as order_date, 
+        DATE_FORMAT(`approval_date`,'%d %b %y')  as approval_date,
+        DATE_FORMAT(`deliver_date`,'%d %b %y')  as delivery_date, 
+        DATEDIFF(`approval_date`,`order_date`) as tat_order_approval,
+        DATEDIFF(`deliver_date`,`approval_date`) as tat_approval_deliver,
+        DATEDIFF(`deliver_date`,`order_date`) as tat_order_delivery
+        , sum(o.`order_total`) as total 
+        from facility_orders o, facilities f, districts d, counties c 
+        where f.facility_code=o.facility_code and f.district=d.id 
+        and c.id=d.county $and
+        group by o.id order by c.county asc ,d.district asc , 
+         f.facility_name asc 
+        ");
+        array_push($row_data, array("The orders below were placed $year"));
+        foreach ($facility_stock_data as $facility_stock_data_item) :
+        array_push($row_data, array(
+        $facility_stock_data_item["order_date"],
+        $facility_stock_data_item["approval_date"],
+        $facility_stock_data_item["total"],
+        $facility_stock_data_item["delivery_date"],
+        $facility_stock_data_item["tat_order_delivery"],
+        "KEMSA",
+        $facility_stock_data_item["facility_name"],
+        $facility_stock_data_item["facility_code"],
+        $facility_stock_data_item["sub_county"],
+        $facility_stock_data_item["county"]
+        ));
+        endforeach;
+        $excel_data['row_data'] = $row_data;
+
+        $this->hcmp_functions->create_excel($excel_data);
+endif;
+    }
+    
+    
+   public function get_time($days){
+     switch (true) {
+          case $days==1:
+          $time="$days day";   
+             break;
+         case $days>1 && $days<=7:
+        $days= ceil($days);
+          $time="$days days";   
+             break;
+             
+              case $days>7 && $days<=30:
+          $new=ceil($days/7);
+          if($new===1){
+           $time="$new week";      
+          }
+          else{
+            $extra=$days%=7;
+              if($extra<=1){
+               $time="$new weeks  $extra day";      
+              }else{
+               $time="$new weeks  $extra days";      
+              }
+     
+          }
+          
+             break;
+             
+            case $days>30 && $days<=365:
+          $new=ceil($days/30);
+          if($new==1){
+           $time="$new month";      
+          }
+          else{
+            $time="$new months";        
+          }
+          
+             break;
+         
+         default:
+             $time="N/A";  
+             break;
+             
+            
+     }  
+      return $time;
+   }
+    
     
 }   
     

@@ -131,7 +131,9 @@ $('.page-header').html('Stocking Levels');
 $("#consumption").on('click', function(){
 active_panel(this);
 $('.page-header').html('Consumption');
-ajax_request_replace_div_content('reports/consumption_data_dashboard',"#notification");
+//consumption_data_dashboard($commodity_id = null, $district_id = null, $facility_code=null, $option = null,$from = null,$to = null, $graph_type=null,$tracer = null) {
+        
+ajax_request_replace_div_content('reports/consumption_data_dashboard/NULL/NULL/NULL/NULL/NULL/NULL/NULL/1',"#notification");
 });
 //Redistributiions Functions
 $("#redistributions").on('click', function(){

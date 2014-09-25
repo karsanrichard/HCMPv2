@@ -12,6 +12,8 @@ class Stock extends MY_Controller {
 		$this->load->helper(array('form','url'));
 		$this->load->library(array('hcmp_functions','form_validation'));
 		$this -> load -> database();
+		ini_set("max_execution_time", "1000000");
+		ini_set("memory_limit", '2048M');
 	}
 	public function index(){
 		
@@ -976,12 +978,12 @@ $facility_code=$this -> session -> userdata('facility_id');
 $stock_id=$this->input->post('id');
 $expiry_date=$this->input->post('expiry_date');
 $batch_no=$this->input->post('batch_no');
-$delete=$this->input->post('delete');
+$delete=$this->input->post('edit');
 $manufacturer=$this->input->post('manufacturer');
 $commodity_id=$this->input->post('commodity_id');
 $commodity_balance_units=$this->input->post('commodity_balance_units');
 for($key=0;$key<count($stock_id);$key++):
-	if($delete[$key]==1):
+	if($delete[$key]==2):
 		//check the total stock balance of the commodity
 		$facility_stock=facility_stocks::get_facility_commodity_total($facility_code, $commodity_id[$key]);
 		$commodity_balance=($commodity_balance_units[$key]*-1);

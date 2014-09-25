@@ -39,10 +39,11 @@
     for (var a = 0; a < begining_bal.length; a++) {            
         var current_bal = begining_bal[a];
         $('#b_balance_'+a).attr("value",current_bal); 
+        $('#physical_count_'+a).attr("value",current_bal); 
     };             
 
     //Set the first element uneditable i.e. Screening Determine
-    $('#tests_done_0').attr("readonly",'true');
+   // $('#tests_done_0').attr("readonly",'true');
 
     //Set the Datepickers
     $("#begin_date").datepicker({
@@ -89,11 +90,13 @@
                 $('#'+top_type).css("border-color","red");                
             }else{      
                 $('#'+top_type).css("border-color","none");
-                compute_tests_done();
+                //compute_tests_done();
             }
         }
 
     }
+
+    
 
 /* --- Start of calculation for the no of tests done for Screening Determine  -- */
 function compute_tests_done(){  
@@ -156,12 +159,14 @@ function compute_tests_done(){
         number = row_id.attr("commodity_id");
         num = parseInt(number);
         validate_inputs('pos_adj_',num);
+        validate_explanation('pos_adj_',num);
     })
     $('.neg_adj').change(function() {
         row_id = $(this).closest("tr");
         number = row_id.attr("commodity_id");
         num = parseInt(number);
         validate_inputs('neg_adj_',num);
+       validate_explanation('neg_adj_',num);
     })  
     $('.phys_count').change(function() {
         row_id = $(this).closest("tr");
@@ -174,10 +179,33 @@ function compute_tests_done(){
         number = row_id.attr("commodity_id");
         num = parseInt(number);
         validate_inputs('losses_',num);
-    })           
-         
+        validate_explanation('losses_',num);
+    }) 
+    
+    $('.bbal').change(function() {
+        row_id = $(this).closest("tr");
+        number = row_id.attr("commodity_id");
+        num = parseInt(number);        
+        validate_inputs('b_balance_',num);
+    })          
+                  
+    //  $('.bbal').load(function() {
+    //     row_id = $(this).closest("tr");
+    //     number = row_id.attr("commodity_id");
+    //     num = parseInt(number);        
+    //     validate_inputs('b_balance_',num);
+    // })   
 
-
+    $('#explanation').change(function() {                        
+        var explanation = $('#explanation').val();
+        if(explanation==''){
+            $('#explanation').css('border-color','red');
+            hide_save();
+        }else{
+            $('#explanation').css('border-color','none');
+            show_save();
+        }
+    })
 
     /*  Check if a value is a number and not less than zero */
     function validate_inputs(input,row){        
@@ -232,6 +260,18 @@ function compute_tests_done(){
             }
 
     }
+     function validate_explanation(input,row){        
+        var input_value  = $('#'+input+row).val();  
+        var explanation = $('#explanation').val();
+        if((input_value>0)&&(explanation=='')){
+            $('#explanation').css('border-color','red');
+            hide_save();
+        }else{
+            $('#explanation').css('border-color','none');
+            show_save();
+        }
+
+    }
 
     /*  End of Input Validations */
     /* Compute Closing Balance */
@@ -269,6 +309,7 @@ function compute_tests_done(){
         }
     }  
 
+    
     function hide_save() {
         $('#validate').show();
         $('#validate').html('NOTE: Please Correct all Input Fields with red border to Activate the Save Data Button');                                         
@@ -282,9 +323,7 @@ function compute_tests_done(){
     }
 
 
-$('#save1')
-.button()
-.click(function() {               
+$('#save1').button().click(function() {               
     $('#message').html('The Report is Being Saved. Please Wait');                                         
     $('#message').css('font-size','13px');                                         
     $('#message').css('color','green'); 
@@ -296,10 +335,12 @@ $("#dialog").dialog({
     modal: true
 });
 
+
 });
 
 
 </script>
+
 <style type="text/css">
     input{
         width: 70px;
@@ -472,7 +513,7 @@ $count = count($res);
                         <input type="hidden" id="unit_of_issue_<?php echo $checker ?>" name = "unit_of_issue[<?php echo $checker ?>]" value="<?php echo $lab_commodities['unit_of_issue']; ?>">
                         <td class="commodity_names" id="commodity_name_<?php echo $checker;?>" colspan = "2" style = "text-align:left"></b><?php echo $lab_commodities['commodity_name']; ?></td>
                         <td style = "color:#000; border:none; text; text-align:center"><?php //echo $lab_commodities['unit_of_issue'];  ?>TESTS</td>
-                        <td><input id="b_balance_<?php echo $checker ?>" name = "b_balance[<?php echo $checker ?>]" class='bbal' size="10" type="text" value="0" style = "text-align:center"/></td>
+                        <td><input id="b_balance_<?php echo $checker ?>" data-uiid="<?php echo $checker ?>" name = "b_balance[<?php echo $checker ?>]" class='bbal' size="10" type="text" value="0" style = "text-align:center"/></td>
                         <td><input id="q_received_<?php echo $checker ?>" name = "q_received[<?php echo $checker ?>]" class='qty_rcvd' size="10" type="text" value="0" style = "text-align:center"/></td>
                         <td><input id="q_used_<?php echo $checker ?>" name = "q_used[<?php echo $checker ?>]" class='qty_used' size="10" type="text" value="0" style = "text-align:center"/></td>
                         <td><input id="tests_done_<?php echo $checker ?>" name = "tests_done[<?php echo $checker ?>]" class='tests_done' size="10" value="0" type="text" style = "text-align:center"/></td>
@@ -482,7 +523,7 @@ $count = count($res);
                         <td><input id="physical_count_<?php echo $checker ?>"  name = "physical_count[<?php echo $checker ?>]" class='phys_count' value="0" size="10" type="text" style = "text-align:center"/></td>
                         <td><input id="q_expiring_<?php echo $checker ?>" name = "q_expiring[<?php echo $checker ?>]" class='user2' size="10" type="text" style = "text-align:center"/></td>
                         <td><input id="days_out_of_stock_<?php echo $checker ?>" name = "days_out_of_stock[<?php echo $checker ?>]" class='user2' size="10" type="text" style = "text-align:center"/></td>  
-                        <td><input id="q_requested_<?php echo $checker ?>" name = "q_requested[<?php echo $checker ?>]" class='user2' size="10" type="text" style = "text-align:center"/></td>                  
+                        <td><input id="q_requested_<?php echo $checker ?>" data-uiid="<?php echo $checker ?>"name = "q_requested[<?php echo $checker ?>]" class='user2' size="10" type="text" style = "text-align:center"/></td>                  
                     </tr>
                     <?php $checker++;
                 }

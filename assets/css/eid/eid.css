@@ -118,3 +118,6 @@ input.input-small{
 	margin-bottom: 1em;
 	padding: 0.2em 0.8em;
 }
+.approve-lab:hover{
+	color:blue;
+}

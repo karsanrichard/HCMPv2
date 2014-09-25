@@ -1,5 +1,5 @@
 
-<div class="container" id="cont_submission_report">
+<div id="cont_submission_report" style="margin: 0 auto">
 	<table class="table table-bordered table-striped tbl_reports_title">
 		<tr>
 			<th>Date of Submission</th>

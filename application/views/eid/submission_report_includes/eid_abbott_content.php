@@ -20,6 +20,9 @@
 		  <input type="text" class="input-sm" name="equalkit" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $equalkit;?>" />
 		</div></td>
 		<td><div align="center">
+		  <input type="text" class="input-sm" name="o_rqualkit"  size="5"  style = "background:#FFFFFF;font-weight:bold"  value="<?php echo $rqualkit;?>"  />
+		</div></td>
+		<td class="allocate_column"><div align="center">
 		  <input type="text" class="input-sm" name="rqualkit"  size="5"  style = "background:#FFFFFF;font-weight:bold"  value="<?php echo $rqualkit;?>"  />
 		</div></td>
 	</tr>
@@ -43,7 +46,8 @@
     </div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="icontrol" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $icontrol;?>" /></div></td>
 		<td><div align="center"><input type="text" class="input-sm"  name="econtrol" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $econtrol;?>"  /></div></td>
-		<td><div align="center"><input type="text" class="input-sm"  name="rcontrol"    size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rcontrol;?>" /></div></td>
+		<td><div align="center"><input type="text" class="input-sm"  name="o_rcontrol"    size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rcontrol;?>" /></div></td>
+		<td class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rcontrol"    size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rcontrol;?>" /></div></td>
 	</tr>
 	<tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
 		<td>3</td>
@@ -66,7 +70,8 @@
     </div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"name="ibuffer" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $ibuffer;?>"  /></div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="ebuffer" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $ebuffer;?>" /></div></td>
-		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="rbuffer"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rbuffer;?>" /></div></td>
+		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="o_rbuffer"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rbuffer;?>" /></div></td>
+		<td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rbuffer"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rbuffer;?>" /></div></td>
 	</tr>
 	<tr style='border-bottom:1px dashed #CCCCCC; '>
 		<td>4</td>
@@ -89,7 +94,8 @@
     </div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="ipreparation" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $ipreparation;?>" /></div></td>
 		<td><div align="center"><input type="text" class="input-sm" name="epreparation" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $epreparation;?>" /></div></td>
-		<td><div align="center"><input type="text" class="input-sm" name="rpreparation" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rpreparation;?>" /></div></td>
+		<td><div align="center"><input type="text" class="input-sm" name="o_rpreparation" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rpreparation;?>" /></div></td>
+		<td class="allocate_column"><div align="center" class="allocate_column"><input type="text" class="input-sm" name="rpreparation" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rpreparation;?>" /></div></td>
 	</tr>
 	<tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
 		<td>5</td>
@@ -110,7 +116,8 @@
     </div></td>
 		  <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="iadhesive" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $iadhesive;?>" /></div></td>
 		  <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="eadhesive" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $eadhesive;?>" /></div></td>
-		  <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="radhesive"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $radhesive;?>" /></div></td>
+		  <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="o_radhesive"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $radhesive;?>" /></div></td>
+		  <td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm" name="radhesive"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $radhesive;?>" /></div></td>
 	</tr>
 	<tr style='border-bottom:1px dashed #CCCCCC; '>
 		<td>6</td>
@@ -132,7 +139,8 @@
     </div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="ideepplate"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $ideepplate;?>" /></div></td>
 		<td><div align="center"><input type="text" class="input-sm"  name="edeepplate" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $edeepplate;?>" /></div></td>
-		<td><div align="center"><input type="text" class="input-sm"  name="rdeepplate" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rdeepplate;?>" /></div></td>
+		<td><div align="center"><input type="text" class="input-sm"  name="o_rdeepplate" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rdeepplate;?>" /></div></td>
+		<td class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rdeepplate" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rdeepplate;?>" /></div></td>
 	</tr>
 	<tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
 		<td>7</td>
@@ -153,7 +161,8 @@
     </div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="imixtube" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $imixtube;?>" /></div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="emixtube" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $emixtube;?>" /></div></td>
-		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="rmixtube"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rmixtube;?>" /></div></td>
+		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="o_rmixtube"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rmixtube;?>" /></div></td>
+		<td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rmixtube"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rmixtube;?>" /></div></td>
 	</tr>
 	<tr style='border-bottom:1px dashed #CCCCCC; '>
 		<td>8</td>
@@ -174,7 +183,8 @@
     </div></td>
 		<td><div align="center"><input type="text" class="input-sm"  name="ireactionvessels"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $ireactionvessels;?>"  /></div></td>
 		<td><div align="center"><input type="text" class="input-sm"  name="ereactionvessels" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $ereactionvessels;?>" /></div></td>
-		<td><div align="center"><input type="text" class="input-sm"  name="rreactionvessels" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreactionvessels;?>" /></div></td>
+		<td><div align="center"><input type="text" class="input-sm"  name="o_rreactionvessels" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreactionvessels;?>" /></div></td>
+		<td class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rreactionvessels" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreactionvessels;?>" /></div></td>
 	</tr>
 	<tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
 		<td>9</td>
@@ -195,7 +205,8 @@
     </div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="ireagent"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $ireagent;?>" /></div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="ereagent" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $ereagent;?>" /></div></td>
-		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="rreagent" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreagent;?>" /></div></td>
+		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="o_rreagent" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreagent;?>" /></div></td>
+		<td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rreagent" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreagent;?>" /></div></td>
 	</tr>
 	<tr style='border-bottom:1px dashed #CCCCCC; '>
 		<td>10</td>
@@ -216,7 +227,8 @@
     </div></td>
 		<td><div align="center"><input type="text" class="input-sm"  name="ireactionplate"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $ireactionplate;?>" /></div></td>
 		<td><div align="center"><input type="text" class="input-sm" name="ereactionplate" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $ereactionplate;?>" /></div></td>
-		<td><div align="center"><input type="text" class="input-sm" name="rreactionplate" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreactionplate;?>" /></div></td>
+		<td><div align="center"><input type="text" class="input-sm" name="o_rreactionplate" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreactionplate;?>" /></div></td>
+		<td class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rreactionplate" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $rreactionplate;?>" /></div></td>
 	</tr>
 	<tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
 		<td>11</td>
@@ -236,7 +248,8 @@
     </div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="i1000disposable"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $i1000disposable;?>"  /></div></td>
 		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="e1000disposable" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $e1000disposable;?>" /></div></td>
-		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="r1000disposable"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $r1000disposable;?>" /></div></td>
+		<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="o_r1000disposable"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $r1000disposable;?>" /></div></td>
+		<td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm" name="r1000disposable"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $r1000disposable;?>" /></div></td>
 	</tr>
 	<tr style='border-bottom:1px dashed #CCCCCC; '>
 		<td>12</td>
@@ -257,14 +270,15 @@
     </div></td>
 		<td><div align="center"><input type="text" class="input-sm"  name="i200disposable"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $i200disposable;?>" /></div></td>
 		<td><div align="center"><input type="text" class="input-sm"  name="e200disposable" size="5"  style="color:#999999; font-weight:bold"  value="<?php echo $e200disposable;?>" /></div></td>
-		<td><div align="center"><input type="text" class="input-sm"  name="r200disposable" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $r200disposable;?>" /></div></td>
+		<td><div align="center"><input type="text" class="input-sm"  name="o_r200disposable" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $r200disposable;?>" /></div></td>
+		<td class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="r200disposable" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $r200disposable;?>" /></div></td>
 	</tr>
 	
 	<tr class="even">
 	<td colspan="2" style="background-color:#F2F2F2"><div align="right"><strong>Comments concerning <font color="#9900CC">negative adjustments</font><br /><small>( eg. where were the kits issued out / donated to and why. )</small></strong></div></td>
 	<td colspan="2"><textarea name="icomments" cols="30" rows="2" style="font-family:monospace; font-size:11.2px; border:none" disabled="disabled" ><?php echo $icomments;?></textarea></td>
 	<td colspan="3" style="background-color:#F2F2F2"><div align="right"><strong>Comments concerning <font color="#009900">positive adjustments</font><br /><small>( eg. where were the kits were received from. )</small></strong></div></td>
-  <td colspan="4">
+  <td colspan="5">
   <input type="hidden" name="rowID" size="5" value="<?php echo $rowID;?>" style = "color:#999999; font-weight:bold font-weight:bold"/>
  
   <?php 

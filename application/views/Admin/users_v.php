@@ -59,10 +59,10 @@
 	$(document).ready(function () {
 		$(".editable").on('click',function() {
 		
-  				$(".edit_user").attr("disabled", false);
+  				$("#edit_user").attr("disabled", false);
 		});
 		
-		$(".edit_user").attr("disabled", "disabled");
+		$("#edit_user").attr("disabled", "disabled");
 		       $('#main-content').on('hidden.bs.modal','#myModal', function () {
 				$("#datatable").hide().fadeIn('fast');
 				// location.reload();
@@ -390,7 +390,7 @@ $("#test").on('click','.edit',function() {
 	//check which fields to display
 	if(chck_fac_l === 0 && chck_dis_l===0 ){
 		
-	$( "#edit_district" ).prop( "disabled", true );
+	//$( "#edit_district" ).prop( "disabled", true );
 	//$( "#edit_facility" ).prop( "disabled", true );
 	
 }else if(chck_dis_l != 0 && chck_fac_l === 0 ){

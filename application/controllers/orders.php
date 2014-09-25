@@ -204,12 +204,67 @@ foreach ($temp as $key => $value) {
 	}
 }
 		//$c = array_combine($array_code, $array_commodity);
-echo '<pre>';print_r($temp); echo '</pre>';
+		$array_id=array();
+		foreach ($temp as $key ) {
+			
+			$kemsa=$key['commodity_code'];
+			
+			$get_id=Commodities::get_id($kemsa);
+			
+			foreach ($get_id as $key2) {
+				$array_id[]=$key2['id'];
+				//echo '<pre>';print_r($key2['id']); echo '</pre>';
+			}
+			
+			//echo '<pre>';print_r($get_id[]); echo '</pre>';
+		}
+		//$result = array_combine($array_id, $temp);
+		//echo '<pre>';print_r($array_id); echo '</pre>';
+		//echo '<pre>';print_r($temp); echo '</pre>';exit;
+		
+		
+			
+			//echo $key['sub_category_name'];
+			
+		
+		$array_combined=array();
+		$id_count=count($temp);
+		
+		foreach ($temp as $key => $value) {
+			
+				//echo $keys['sub_category_name'];
+				array_push($array_combined,array(
+			'sub_category_name'=>$value['sub_category_name'],
+        'commodity_name'=>$value['commodity_name'],
+        'unit_size'=>$value['unit_size'],
+        'unit_cost'=>$value['unit_cost'],
+        'commodity_code'=>$value['commodity_code'],
+        'commodity_id'=>$array_id[$key],
+        'quantity_ordered'=>$value['quantity_ordered'],
+        'total_commodity_units'=>$value['total_commodity_units'],
+        'opening_balance'=>0,
+        'total_receipts'=>0,
+        'total_issues'=>0,
+        'comment'=>'',
+        'closing_stock_'=>0,
+        'closing_stock'=>0,
+        'days_out_of_stock'=>0,
+        'date_added'=>'',
+        'losses'=>0,
+        'status'=>0,
+        'adjustmentpve'=>0,
+        'adjustmentnve'=>0,
+        'historical'=>0));
+		}
+		//echo '<pre>';print_r($array_combined); echo '</pre>';
+		//echo '<pre>';print_r($array_id); echo '</pre>';
+		//exit;
+		
               
 	//var_dump();
-	exit;
+	//exit;
         //unset($objPHPExcel);
-       $data['order_details'] = $data['facility_order'] = $temp;  
+       $data['order_details'] = $data['facility_order'] = $array_combined;  
         }else{
         $data['order_details'] = $data['facility_order'] = $items;   
         }
@@ -307,7 +362,7 @@ echo '<pre>';print_r($temp); echo '</pre>';
 			$this -> db -> insert('facility_orders', $order_details);
 			$new_order_no = $this -> db -> insert_id();
 			}
-			$temp_array = array("commodity_id" => (int)$commodity_id[$i], 'quantity_ordered_pack' => (int)$quantity_ordered_pack[$i], 'quantity_ordered_unit' => (int)$quantity_ordered_pack[$i], 'quantity_recieved' => 0, 'price' => $price[$i], 'o_balance' => $o_balance[$i], 't_receipts' => $t_receipts[$i], 't_issues' => $t_issues[$i], 'adjustpve' => $adjustpve[$i], 'adjustnve' => $adjustnve[$i], 'losses' => $losses[$i], 'days' => $days[$i], 'c_stock' => $c_stock[$i], 'comment' => $comment[$i], 's_quantity' => $s_quantity[$i], 'amc' => $amc[0], 'order_number_id' => $new_order_no);
+			$temp_array = array("commodity_id" => (int)$commodity_id[$i], 'quantity_ordered_pack' => (int)$quantity_ordered_pack[$i], 'quantity_ordered_unit' => (int)$quantity_ordered_units[$i], 'quantity_recieved' => 0, 'price' => $price[$i], 'o_balance' => $o_balance[$i], 't_receipts' => $t_receipts[$i], 't_issues' => $t_issues[$i], 'adjustpve' => $adjustpve[$i], 'adjustnve' => $adjustnve[$i], 'losses' => $losses[$i], 'days' => $days[$i], 'c_stock' => $c_stock[$i], 'comment' => $comment[$i], 's_quantity' => $s_quantity[$i], 'amc' => $amc[0], 'order_number_id' => $new_order_no);
 			//create the array to push to the db
 			array_push($data_array, $temp_array);
 			
@@ -345,7 +400,7 @@ echo '<pre>';print_r($temp); echo '</pre>';
 
 			$message=$message_1.$pdf_body;
 
-			//$response= $this->hcmp_functions->send_order_submission_email($message,$subject,$attach_file1."(more)".$attach_file2,null);
+			$response= $this->hcmp_functions->send_order_submission_email($message,$subject,$attach_file1."(more)".$attach_file2,null);
             
 			if($response){
 			delete_files($attach_file1);
@@ -445,7 +500,7 @@ echo '<pre>';print_r($temp); echo '</pre>';
 			ON DUPLICATE KEY UPDATE
 			`commodity_id`=$commodity_id[$i],
 			`quantity_ordered_pack`=$quantity_ordered_pack[$i],
-			`quantity_ordered_unit`=$quantity_ordered_pack[$i],
+			`quantity_ordered_unit`=$quantity_ordered_unit[$i],
 			`price`=$price[$i],
 			`o_balance`=$o_balance[$i],
 			`t_receipts`=$t_receipts[$i],
@@ -486,8 +541,10 @@ echo '<pre>';print_r($temp); echo '</pre>';
 			$this -> hcmp_functions -> clone_excel_order_template($order_id,'save_file',$file_name);//create excel
 			
 			$attach_file1='./pdf/'.$file_name.'.pdf';
-			$attach_file2="./print_docs/excel/excel_files/".$file_name.'.xlsx';
-			//echo $rejected;
+			$attach_file2="./print_docs/excel/excel_files/".$file_name.'.xls';
+			//echo $attach_file;
+			
+			//exit;
 			
 			if ($rejected == 1) {
 				$myobj -> status = 1;
@@ -527,8 +584,7 @@ echo '<pre>';print_r($temp); echo '</pre>';
           $message="<br>Please find the $status Order for  ".$facility_name.'
 		  <br>'.$info.$pdf_body ;
 
-		$response= $this->hcmp_functions->send_order_approval_email($message,$subject,
-		$attach_file1."(more)".$attach_file2,$facility_code,$status);
+		$response= $this->hcmp_functions->send_order_approval_email($message,$subject,$attach_file1."(more)".$attach_file2,$facility_code,$status);
 		if($response){
 			delete_files($attach_file1);
             delete_files($attach_file2);

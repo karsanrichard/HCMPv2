@@ -19,6 +19,9 @@
 	  <input type="text" class="input-sm" name="vequalkit" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vequalkit;?>" />
 	</div></td>
 	<td><div align="center">
+	  <input type="text" class="input-sm" name="o_rvqualkit"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrqualkit;?>"  />
+	</div></td>
+	<td class="allocate_column"><div align="center">
 	  <input type="text" class="input-sm" name="rvqualkit"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrqualkit;?>"  />
 	</div></td>
 </tr>
@@ -41,7 +44,8 @@
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vpcontrol" size="5" style="color:#999999; font-weight:bold" value="<?php echo $vlcontrolreceived;?>"  /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="vicontrol" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vicontrol;?>" /></div></td>
 	<td><div align="center"><input type="text" class="input-sm"  name="vecontrol" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vecontrol;?>"  /></div></td>
-	<td><div align="center"><input type="text" class="input-sm"  name="rvcontrol" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrcontrol;?>" /></div></td>
+	<td><div align="center"><input type="text" class="input-sm"  name="o_rvcontrol" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrcontrol;?>" /></div></td>
+	<td class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rvcontrol" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrcontrol;?>" /></div></td>
 </tr>
 
 <tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
@@ -62,7 +66,8 @@
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vpbuffer" size="5" style="color:#999999; font-weight:bold" value="<?php echo $vlbufferreceived;?>"  /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="vibuffer" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vibuffer;?>" /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="vebuffer" size="5" style="color:#999999; font-weight:bold"   value="<?php echo $vebuffer;?>" /></div></td>
-	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="rvbuffer"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrbuffer;?>"  /></div></td>
+	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="o_rvbuffer"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrbuffer;?>"  /></div></td>
+	<td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rvbuffer"    size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrbuffer;?>"  /></div></td>
 </tr>
 
 <tr style='border-bottom:1px dashed #CCCCCC; '>
@@ -83,7 +88,8 @@
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vppreparation" size="5" style="color:#999999; font-weight:bold" value="<?php echo $vlpreparationreceived;?>"  /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="vipreparation" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vipreparation;?>"  /></div></td>
 	<td><div align="center"><input type="text" class="input-sm" name="vepreparation" size="5" style="color:#999999; font-weight:bold"   value="<?php echo $vepreparation;?>" /></div></td>
-	<td><div align="center"><input type="text" class="input-sm" name="rvpreparation" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrpreparation;?>" /></div></td>
+	<td><div align="center"><input type="text" class="input-sm" name="o_rvpreparation" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrpreparation;?>" /></div></td>
+	<td class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rvpreparation" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrpreparation;?>" /></div></td>
 </tr>
 
 <tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
@@ -102,7 +108,8 @@
 	   <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vpadhesive" size="5" style="color:#999999; font-weight:bold" value="<?php echo $vladhesivereceived;?>"  /></div></td>
 	  <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="viadhesive" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $viadhesive;?>" /></div></td>
 	  <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="veadhesive" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $veadhesive;?>" /></div></td>
-	  <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="rvadhesive" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vradhesive;?>" /></div></td>
+	  <td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="o_rvadhesive" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vradhesive;?>" /></div></td>
+	  <td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rvadhesive" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vradhesive;?>" /></div></td>
 </tr>
 <tr style='border-bottom:1px dashed #CCCCCC; '>
 	<td>6</td>
@@ -122,7 +129,8 @@
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vpdeepplate"  size="5" style="color:#999999; font-weight:bold" value="<?php echo $vldeepplatereceived;?>" /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="videepplate"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $videepplate;?>"  /></div></td>
 	<td><div align="center"><input type="text" class="input-sm"  name="vedeepplate" size="5" style="color:#999999; font-weight:bold"   value="<?php echo $vedeepplate;?>" /></div></td>
-	<td><div align="center"><input type="text" class="input-sm"  name="rvdeepplate" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrdeepplate;?>" /></div></td>
+	<td><div align="center"><input type="text" class="input-sm"  name="o_rvdeepplate" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrdeepplate;?>" /></div></td>
+	<td class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rvdeepplate" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrdeepplate;?>" /></div></td>
 </tr>
 <tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
 	<td>7</td>
@@ -141,7 +149,8 @@
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vpmixtube" size="5" style="color:#999999; font-weight:bold" value="<?php echo $vlmixtubereceived;?>"  /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="vimixtube" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vimixtube;?>" /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vemixtube" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vemixtube;?>"  /></div></td>
-	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="rvmixtube" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrmixtube;?>"  /></div></td>
+	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="o_rvmixtube" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrmixtube;?>"  /></div></td>
+	<td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rvmixtube" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrmixtube;?>"  /></div></td>
 </tr>
 <tr style='border-bottom:1px dashed #CCCCCC; '>
 	<td>8</td>
@@ -160,7 +169,8 @@
 	<td><div align="center"><input type="text" class="input-sm"  name="vpreactionvessels"  size="5" style="color:#999999; font-weight:bold" value="<?php echo $vlreactionvesselsreceived;?>" /></div></td>
 	<td><div align="center"><input type="text" class="input-sm" name="vireactionvessels"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vireactionvessels;?>" /></div></td>
 	<td><div align="center"><input type="text" class="input-sm"  name="vereactionvessels" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vereactionvessels;?>"  /></div></td>
-	<td><div align="center"><input type="text" class="input-sm"  name="rvreactionvessels" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreactionvessels;?>" /></div></td>
+	<td><div align="center"><input type="text" class="input-sm"  name="o_rvreactionvessels" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreactionvessels;?>" /></div></td>
+	<td class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rvreactionvessels" size="5"  style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreactionvessels;?>" /></div></td>
 </tr>
 <tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
 	<td>9</td>
@@ -179,7 +189,8 @@
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vpreagent"  size="5" style="color:#999999; font-weight:bold" value="<?php echo $vlreagentreceived;?>" /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="vireagent"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vireagent;?>"  /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="vereagent" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vereagent;?>" /></div></td>
-	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="rvreagent" size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreagent;?>" /></div></td>
+	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="o_rvreagent" size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreagent;?>" /></div></td>
+	<td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rvreagent" size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreagent;?>" /></div></td>
 </tr>
 <tr style='border-bottom:1px dashed #CCCCCC; '>
 	<td>10</td>
@@ -198,7 +209,8 @@
 	<td><div align="center"><input type="text" class="input-sm"  name="vpreactionplate"  size="5" style="color:#999999; font-weight:bold" value="<?php echo $vlreactionplatereceived;?>" /></div></td>
 	<td><div align="center"><input type="text" class="input-sm" name="vireactionplate"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vireactionplate;?>" /></div></td>
 	<td><div align="center"><input type="text" class="input-sm" name="vereactionplate" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vereactionplate;?>" /></div></td>
-	<td><div align="center"><input type="text" class="input-sm" name="rvreactionplate" size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreactionplate;?>" /></div></td>
+	<td><div align="center"><input type="text" class="input-sm" name="o_rvreactionplate" size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreactionplate;?>" /></div></td>
+	<td class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rvreactionplate" size="5" style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vrreactionplate;?>" /></div></td>
 </tr>
 <tr class="even" style='border-bottom:1px dashed #CCCCCC; '>
 	<td>11</td>
@@ -217,7 +229,8 @@
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm"  name="vp1000disposable"  size="5" style="color:#999999; font-weight:bold" value="<?php echo $vldisposable1000received;?>" /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="vi1000disposable"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vi1000disposable;?>" /></div></td>
 	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="ve1000disposable" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $ve1000disposable;?>" /></div></td>
-	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="rv1000disposable" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vr1000disposable;?>" /></div></td>
+	<td style="background-color:#FFFFFF"><div align="center"><input type="text" class="input-sm" name="o_rv1000disposable" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vr1000disposable;?>" /></div></td>
+	<td style="background-color:#FFFFFF" class="allocate_column"><div align="center"><input type="text" class="input-sm" name="rv1000disposable" size="5"    style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vr1000disposable;?>" /></div></td>
 </tr>
 <tr style='border-bottom:1px dashed #CCCCCC; '>
 	<td>12</td>
@@ -236,13 +249,14 @@
 	<td><div align="center"><input type="text" class="input-sm"  name="vp200disposable"  size="5" style="color:#999999; font-weight:bold" value="<?php echo $vldisposable200received;?>" /></div></td>
 	<td><div align="center"><input type="text" class="input-sm" name="vi200disposable"  size="5" style="color:#999999; font-weight:bold"  value="<?php echo $vi200disposable;?>" /></div></td>
 	<td><div align="center"><input type="text" class="input-sm"  name="ve200disposable" size="5" style="color:#999999; font-weight:bold"  value="<?php echo $ve200disposable;?>"  /></div></td>
-	<td><div align="center"><input type="text" class="input-sm"  name="rv200disposable" size="5"     style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vr200disposable;?>" /></div></td>
+	<td><div align="center"><input type="text" class="input-sm"  name="o_rv200disposable" size="5"     style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vr200disposable;?>" /></div></td>
+	<td class="allocate_column"><div align="center"><input type="text" class="input-sm"  name="rv200disposable" size="5"     style = "background:#FFFFFF;font-weight:bold"   value="<?php echo $vr200disposable;?>" /></div></td>
 </tr>
 <tr class="even">
 <td colspan="2" style="background-color:#F2F2F2"><div align="right"><strong>Comments concerning <font color="#9900CC">negative adjustments</font><br /><small>( eg. where were the kits issued out / donated to and why. )</small></strong></div></td>
 <td colspan="2"><textarea name="vicomments" cols="30" rows="2" style="font-family:monospace; font-size:11.2px; border:none" disabled="disabled" > <?php echo $vicomments;?> </textarea></td>	
 <td colspan="3" style="background-color:#F2F2F2"><div align="right"><strong>Comments concerning <font color="#009900">positive adjustments</font><br /><small>( eg. where were the kits were received from. )</small></strong></div></td>
-  <td colspan="4">
+  <td colspan="5">
   <input type="hidden" name="vrowID" size="5" value="<?php echo $vrowID;?>" style = "background:#FFFFCC; font-weight:bold"/>
  
   <?php 

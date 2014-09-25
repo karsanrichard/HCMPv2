@@ -1,5 +1,8 @@
-<script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>Scripts/jquery.dataTables.js"></script>
-<script src="http://tableclothjs.com/assets/js/jquery.tablecloth.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/tablecloth/assets/css/tablecloth.css">
+<script src="<?php echo base_url(); ?>assets/tablecloth/assets/js/jquery.tablesorter.js"></script>
+<script src="<?php echo base_url(); ?>assets/tablecloth/assets/js/jquery.metadata.js"></script>
+<script src="<?php echo base_url(); ?>assets/tablecloth/assets/js/jquery.tablecloth.js"></script>
 
 
 <script type="text/javascript">
@@ -23,9 +26,6 @@
 </script>
 
 <style>
-
-    @import "http://tableclothjs.com/assets/css/tablecloth.css";
-
     .alerts{
         width:95%;
         height:auto;
@@ -86,7 +86,7 @@
         <tbody>
             <?php
 
-            $max = count($allocations);
+            $max = count($allocations);            
             $i = 0;
             while ($i < $max) {
                 $allocation_date = date("4S F Y", $allocations[$i]['allocated_date']);
@@ -107,18 +107,14 @@
                     <td><?php echo $allocations[$i]['facility_name']; ?></td>
                     <td><?php echo $allocations[$i]['Zone']; ?></td>
                     <td><?php echo $allocations[$i]['contactperson']; ?></td>
-                    <td>0<?php echo $allocations[$i]['cellphone']; ?></td>
-                    <?php 
-                        for ($i=0; $i <6 ; $i++) { ?>
-                        <td>Echo</td>
-                    <?php                           
-                        }
-                    ?>
+                    <td>0<?php echo $allocations[$i]['cellphone']; ?></td>                  
+                    <td>0<?php echo $allocations[$i]['cellphone']; ?></td>                  
+                    <td>0<?php echo $allocations[$i]['cellphone']; ?></td>                      
 
                     <!--td><?php echo $allocations[$i]['allocated'];$i++;$i++?></td>
-                    <td><?php echo $allocations[$i]['allocated']; ?></td>
+                    <td><?php echo $allocations[$i]['allocated']; ?></td-->
                     <td><?php echo $allocation_date; ?></td>
-                    <td><?php echo $quarter; ?></td-->
+                    <td><?php echo $quarter; ?></td>
                 </tr>
                 <?php
                 $i++;
@@ -137,7 +133,7 @@
             "sDom": "T lfrtip",
             "sScrollY": "377px",
             "sScrollX": "100%",
-            "bPaginate": false,
+            "bPaginate": true,
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
@@ -174,17 +170,14 @@
 </script>
 
 <!--Datatables==========================  --> 
-<script src="http://cdn.datatables.net/1.10.0/js/jquery.dataTables.js" type="text/javascript"></script>
-<script src="../v2/assets/datatable/jquery.dataTables.min.js" type="text/javascript"></script>  
-<script src="../v2/assets/datatable/dataTables.bootstrap.js" type="text/javascript"></script>
-<script src="../v2/assets/datatable/TableTools.js" type="text/javascript"></script>
-<script src="../v2/assets/datatable/ZeroClipboard.js" type="text/javascript"></script>
-<script src="../v2/assets/datatable/dataTables.bootstrapPagination.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>assets/datatable/jquery.dataTables.min.js" type="text/javascript"></script>  
+<script src="<?php echo base_url(); ?>assets/datatable/dataTables.bootstrap.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>assets/datatable/TableTools.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>assets/datatable/ZeroClipboard.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>assets/datatable/dataTables.bootstrapPagination.js" type="text/javascript"></script>
 <!-- validation ===================== -->
-<script src="../v2/assets/scripts/jquery.validate.min.js" type="text/javascript"></script>
-
-
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.validate.min.js" type="text/javascript"></script>
  
-<link href="../v2/assets/boot-strap3/css/bootstrap-responsive.css" type="text/css" rel="stylesheet"/>
-<link href="../v2/assets/datatable/TableTools.css" type="text/css" rel="stylesheet"/>
-<link href="../v2/assets/datatable/dataTables.bootstrap.css" type="text/css" rel="stylesheet"/>
+<link href="<?php echo base_url(); ?>assets/boot-strap3/css/bootstrap-responsive.css" type="text/css" rel="stylesheet"/>
+<link href="<?php echo base_url(); ?>assets/datatable/TableTools.css" type="text/css" rel="stylesheet"/>
+<link href="<?php echo base_url(); ?>assets/datatable/dataTables.bootstrap.css" type="text/css" rel="stylesheet"/>

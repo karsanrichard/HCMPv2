@@ -27,6 +27,9 @@
 	  <input type="text"  class="input-sm" value="<?php echo @$vequalkit;?>" style = "background:#F6F6F6;font-weight:bold" name="vequalkit" size="10" />
     </div></td>
 	<td><div align="center">
+	  <input type="text"  class="input-sm"   value="<?php echo @$vrqualkit;?>" name="o_rvqualkit" size="10" style = "background:#F6F6F6;font-weight:bold" />
+    </div></td>
+    <td class="allocate_column"><div align="center">
 	  <input type="text"  class="input-sm"   value="<?php echo @$vrqualkit;?>" name="rvqualkit" size="10" style = "background:#F6F6F6;font-weight:bold" />
     </div></td>
 </tr>
@@ -57,6 +60,9 @@
 	  <input type="text"  class="input-sm" value="<?php echo @$vespexagent;?>"  style = "background:#ffffff;font-weight:bold" name="vespexagent" size="10" />
     </div></td>
 	<td style="background-color:#FFFFFF"><div align="center">
+	  <input type="text"  class="input-sm"   value="<?php echo @$vrspexagent;?>" name="o_rvspexagent" size="10" style = "background:#FFFFFF;font-weight:bold"/>
+    </div></td>
+    <td style="background-color:#FFFFFF" class="allocate_column"><div align="center">
 	  <input type="text"  class="input-sm"   value="<?php echo @$vrspexagent;?>" name="rvspexagent" size="10" style = "background:#FFFFFF;font-weight:bold"/>
     </div></td>
 </tr>
@@ -87,6 +93,9 @@
 	  <input type="text"  class="input-sm" value="<?php echo @$veampinput;?>"  style = "background:#F6F6F6;font-weight:bold" name="veampinput" size="10" />
     </div></td>
 	<td><div align="center">
+	  <input type="text"  class="input-sm"   value="<?php echo @$vrampinput;?>" name="o_rvampinput" size="10" style = "background:#F6F6F6;font-weight:bold" />
+    </div></td>
+    <td class="allocate_column"><div align="center">
 	  <input type="text"  class="input-sm"   value="<?php echo @$vrampinput;?>" name="rvampinput" size="10" style = "background:#F6F6F6;font-weight:bold" />
     </div></td>
 </tr>
@@ -118,6 +127,9 @@
 	  <input type="text"  class="input-sm" value="<?php echo @$veampflapless;?>"  style = "background:#ffffff;font-weight:bold" name="veampflapless" size="10" />
     </div></td>
 	<td style="background-color:#FFFFFF"><div align="center">
+	  <input type="text"  class="input-sm"   value="<?php echo @$vrampflapless;?>" name="o_rvampflapless" size="10" style = "background:#FFFFFF;font-weight:bold" />
+    </div></td>
+    <td style="background-color:#FFFFFF" class="allocate_column"><div align="center">
 	  <input type="text"  class="input-sm"   value="<?php echo @$vrampflapless;?>" name="rvampflapless" size="10" style = "background:#FFFFFF;font-weight:bold" />
     </div></td>
 </tr>			
@@ -148,6 +160,9 @@
 	  <input type="text" class="input-sm"  value="<?php echo @$veampwash;?>" style = "background:#F6F6F6;font-weight:bold" name="veampwash" size="10" />
     </div></td>
 	<td><div align="center">
+	  <input type="text"  class="input-sm"   value="<?php echo @$vrampwash;?>" name="o_rvampwash" size="10" style = "background:#F6F6F6;font-weight:bold" />
+    </div></td>
+    <td class="allocate_column"><div align="center">
 	  <input type="text"  class="input-sm"   value="<?php echo @$vrampwash;?>" name="rvampwash" size="10" style = "background:#F6F6F6;font-weight:bold" />
     </div></td>
 </tr>
@@ -178,6 +193,9 @@
 	  <input type="text"  class="input-sm" value="<?php echo @$veampktips;?>" style = "background:#ffffff;font-weight:bold" name="veampktips" size="10" />
     </div></td>
 	<td style="background-color:#FFFFFF"><div align="center">
+	  <input type="text"  class="input-sm"   value="<?php echo @$vrampktips;?>" name="o_rvampktips" size="10" style = "background:#FFFFFF;font-weight:bold" />
+    </div></td>
+    <td style="background-color:#FFFFFF" class="allocate_column"><div align="center">
 	  <input type="text"  class="input-sm"   value="<?php echo @$vrampktips;?>" name="rvampktips" size="10" style = "background:#FFFFFF;font-weight:bold" />
     </div></td>
 </tr>
@@ -208,6 +226,9 @@
 	  <input type="text" class="input-sm"  value="<?php echo @$vektubes;?>" style = "background:#F6F6F6;font-weight:bold" name="vektubes" size="10"/>
     </div></td>
 	<td><div align="center">
+	  <input type="text" class="input-sm"    value="<?php echo @$vrktubes;?>" name="o_rvktubes" size="10" style = "background:#F6F6F6;font-weight:bold" />
+    </div></td>
+    <td class="allocate_column"><div align="center">
 	  <input type="text" class="input-sm"    value="<?php echo @$vrktubes;?>" name="rvktubes" size="10" style = "background:#F6F6F6;font-weight:bold" />
     </div></td>
 </tr>
@@ -221,7 +242,7 @@
   <input type="hidden" class="input-sm" name="vicomments" value="<?php echo @$vicomments;?>"/></td>	
 	
 	<td colspan="3" style="background-color:#F2F2F2"><div align="right"><strong>Comments concerning <font color="#009900">positive adjustments</font><br /><small>( eg. where were the kits were received from. )</small></strong></div></td>
-  <td colspan="3"><input type="hidden" name="vrowID" value="<?php echo @$vrowID;?>" style = "background:#FFFFCC; font-weight:bold"/>
+  <td colspan="4"><input type="hidden" name="vrowID" value="<?php echo @$vrowID;?>" style = "background:#FFFFCC; font-weight:bold"/>
   <input type="hidden" name="vreceivedtestkitlotnno"  value="<?php echo @$vkitlotno;?>" />
  <input type="hidden" name="vreceivedfrom"  value="<?php echo @$vlabfrom;?>" />
  <input type="hidden" name="vreceiveddate"  value="<?php echo @$vdatereceived;?>" />

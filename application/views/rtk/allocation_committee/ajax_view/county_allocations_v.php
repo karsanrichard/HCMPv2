@@ -15,7 +15,7 @@
         });
  */
 
-        $('.nav li a').click(function(e) {
+       /* $('.nav li a').click(function(e) {
             var $this = $(this);
             var thistext = $(this).text();
             $('.nav li').removeClass('active');
@@ -24,7 +24,7 @@
             $('.dataTables_filter label input').val(thistext).trigger($.Event("keyup", {keyCode: 13}));
 
             e.preventDefault();
-        });
+        });*/
        $("table").tablecloth({theme: "paper"});
 
 
@@ -33,7 +33,7 @@
 
 <style>
    
-    @import "http://tableclothjs.com/assets/css/tablecloth.css";
+    @import "<?php base_url ?>tablecloth/assets/css/tablecloth.css";
 
     .alerts{
         width:95%;

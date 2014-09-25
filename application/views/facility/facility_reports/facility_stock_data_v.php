@@ -29,8 +29,10 @@ foreach ($facility_stock_data as $facility_stock_data) :
 			$commodity_id=$facility_stock_data['commodity_id'];
 			$manufacturer=$facility_stock_data['manufacture'];	
            // check if the user can edit the stock level
-if($this -> session -> userdata('user_indicator')=='facility_admin'){$check_box="</td><td><input type='checkbox' name='delete[$count]' value='1' /></td>";}
-		else{$check_box="<input type='hidden' name='delete[$count]' value='0' /></td>";}	
+if($this -> session -> userdata('user_indicator')=='facility_admin')
+		{$check_box="</td><td><input type='checkbox' id='delete[]' class='chkNumber' name='delete[]' value='1' />
+		<input class='forcheck' type='hidden' value='1' id='edit[]' name='edit[]'></td>";}
+		else{$check_box="<input type='hidden' name='delete[]' value='0' /></td>";}	
 		echo "<tr>
 		<td>$commodity_name</td>
 		<td><input type='hidden' name='id[]' class='id' value='$facility_stock_data[facility_stock_id]'/>
@@ -58,6 +60,25 @@ endforeach;?>
   <?php echo form_close(); ?>  
 <script>
 $(document).ready(function() {
+	
+	var chkclass = '';
+$('.chkNumber').click(function() {
+	chkclass =$(this).attr('class')
+	
+	if(chkclass=='chkNumber'){
+		$(this).attr('class','new');
+		$(this).parent().find('.forcheck').attr('value',2);
+	}else{
+		$(this).attr('class','chkNumber');
+		$(this).parent().find('.forcheck').attr('value',1);
+		
+	}
+	});
+	$('.new').click(function() {
+	$(this).attr('class','chkNumber')
+	  
+      });
+ 
 	//datatables settings 
 	$('#example').dataTable( {
 		 "sDom": "T lfrtip",

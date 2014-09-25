@@ -27,7 +27,7 @@
                 $formated_date= $formatdate->format('d M Y');
                 $total_units=$potential_exp['total_commodity_units'];
                 $calculated=$potential_exp['current_balance'];
-                $expired_packs=round($calculated/$total_units);
+                $expired_packs=($calculated/$total_units);
                 $total_exp_cost=  $expired_packs*$potential_exp['unit_cost'];
                 $ts1 = strtotime(date($potential_exp['expiry_date']));
                 $ts2 = strtotime(date('d M Y'));
@@ -45,7 +45,7 @@
               <td><?php echo floor($seconds_diff/3600/24);?> </td>
               <td><?php echo $expired_packs;?> </td>
               <td><?php echo $calculated;?> </td>                          
-              <td><?php echo $total_exp_cost;?> </td>
+              <td><?php echo $potential_exp['unit_cost'];?> </td>
               <td><?php  echo number_format($total_exp_cost, 2, '.', ',');?></td>
             </tr>
           <?php

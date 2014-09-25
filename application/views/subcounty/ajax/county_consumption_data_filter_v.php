@@ -16,49 +16,50 @@
       <li class=""><a href="#subcounty" data-toggle="tab">Sub County View</a></li>
 </ul>
     <div id="myTabContent" class="tab-content">
-
+	<!--for the tracer items tab-->
       <div  id="tracer" class="tab-pane fade active in">
-          <br />
-          <div class="filter">
-                    <form class="form-inline" role="form">
-<select id="tracer_commodity_filter" class="form-control col-md-3">
-<option value="NULL">Select Commodity</option>
-<?php
-foreach($tracer_items as $data):
-        $commodity_name=$data->commodity_name;   
-        $commodity_id=$data->id;
-        echo "<option value='$commodity_id'>$commodity_name</option>";
-endforeach;
-?>
-</select>
-    <select id="tracer_district_filter" class="form-control col-md-2">
-<option selected="selected" value="NULL">Select Sub-county</option>
-<?php
-foreach($district_data as $district_):
-        $district_id=$district_->id;
-        $district_name=$district_->district;    
-        echo "<option value='$district_id'>$district_name</option>";
-endforeach;
-?>
-</select> 
-<input type="text" name="tracer_from"  id="tracer_from" 
-placeholder="FROM" class="form-control input-small col-md-1 clone_datepicker_normal_limit_today" />
-<input type="text" name="tracer_to"  id="tracer_to" placeholder="TO" class="form-control input-small col-md-1 clone_datepicker_normal_limit_today" /> 
-<select id="tracer_plot_value_filter" class="form-control col-md-2">
-<option selected="selected" value="NULL">Select Plot value</option>
-<option value="packs">Packs</option>
-<option value="units">Units</option>
-<option value="ksh">KSH</option>
-</select>
-<div class="col-md-1">
-<button class="btn btn-sm btn-success tracer-filter"><span class="glyphicon glyphicon-filter"></span>Filter</button> 
-</div>
-<div class="col-md-1">
-<button class="btn btn-sm btn-success tracer-download"><span class="glyphicon glyphicon-save"></span>Download</button> 
-</div>
+
+      	<br />
+      	<div class="filter">
+      		<form class="form-inline" role="form">
+      			<select id="tracer_commodity_filter" class="form-control col-md-3">
+      				<option value="NULL">Select Commodity</option>
+					<?php
+					foreach($tracer_items as $data):
+					        $commodity_name=$data->commodity_name;   
+					        $commodity_id=$data->id;
+					        echo "<option value='$commodity_id'>$commodity_name</option>";
+					endforeach;
+					?>
+				</select>
+				<select id="tracer_district_filter" class="form-control col-md-2">
+					<option selected="selected" value="NULL">Select Sub-county</option>
+					<?php
+					foreach($district_data as $district_):
+					        $district_id=$district_->id;
+					        $district_name=$district_->district;    
+					        echo "<option value='$district_id'>$district_name</option>";
+					endforeach;
+					?>
+				</select> 
+				<!--Date Pickers for from and to-->
+				<input type="text" name="tracer_from"  id="tracer_from" placeholder="FROM" class="form-control input-small col-md-1 clone_datepicker_normal_limit_today" />
+				<input type="text" name="tracer_to"  id="tracer_to" placeholder="TO" class="form-control input-small col-md-1 clone_datepicker_normal_limit_today" /> 
+				<select id="tracer_plot_value_filter" class="form-control col-md-2">
+					<option selected="selected" value="NULL">Select Plot value</option>
+					<option value="packs">Packs</option>
+					<option value="units">Units</option>
+					<!--<option value="ksh">KSH</option>-->
+				</select>
+				<div class="col-md-1">
+					<button class="btn btn-sm btn-success tracer-filter"><span class="glyphicon glyphicon-filter"></span>Filter</button> 
+				</div>
+				<div class="col-md-1">
+					<button class="btn btn-sm btn-success tracer-download"><span class="glyphicon glyphicon-save"></span>Download</button> 
+				</div>
           </form>
-          </div>
       </div>
+  </div>
        <div  id="cat" class="tab-pane fade">
        	<br>
        	<div class="filter row">
@@ -268,7 +269,7 @@ var drop_down='';
         if(from==''){from="NULL";   }
         if(to==''){to="NULL";}
 
-  var url_ = "reports/consumption_stats_graph/"+
+  		var url_ = "reports/consumption_stats_graph/"+
        $("#tracer_commodity_filter").val()+"/NULL/NULL/NULL/"+$("#tracer_plot_value_filter").val()+ "/"+encodeURI(from)+ "/"+encodeURI(to)+"/csv_data"; 
          window.open(url+url_ ,'_blank');   
           }); 

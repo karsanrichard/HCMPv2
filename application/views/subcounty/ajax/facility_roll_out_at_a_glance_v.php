@@ -5,7 +5,7 @@
 	 <div id="temp"></div>
 	<?php echo @$data; ?>
 	<div style="padding-top: 25px;">
-<!--<div class="filter" >
+		<!--<div class="filter" >
 <h5>
 	<select name="year" id="year_filter" style="width: 7.8em;">
 		<option value="0">Select Year</option>
@@ -39,13 +39,11 @@
 	<div id="container_monthly"  style="height:60%; width: 50%; margin: 0 auto;float: left"></div>	
 	</div>
 	<div id="log_data_graph"  style="height:60%; width: 50%; margin: 0 auto;float: left"></div>	
-	<?php //echo $graph_data_daily."<br>"."<br>"; ?>
-	<?php //echo $graph_data_monthly."<br>"."<br>"; ?>
-	<?php //echo $graph_log."<br>"."<br>"; ?> 
+	
 	<script>
-	<?php echo $graph_data_daily;?>
-	<?php echo $graph_data_monthly;?>
-	<?php echo $graph_log;?>
+	<?php echo @$graph_data_daily;?>
+	<?php echo @$graph_data_monthly;?>
+	<?php echo @$graph_log;?>
 	</script>
 	</div>
 	
@@ -107,16 +105,13 @@ $(document).ready(function() {
         }); 
 	}
 	$("#filter").click(function(){
-		var url = "reports/get_sub_county_facility_mapping_data/"+
-				        $("#year_filter").val()+
-				        "/"+$("#month_filter").val();
+		var url = "reports/get_sub_county_facility_mapping_data/"+$("#year_filter").val()+ "/"+$("#month_filter").val();
         	ajax_request_replace_div_content(url,'#container');
         	ajax_request_replace_div_content(url,'#log_data_graph');
 		
           });
 	$("#download").click(function(){
-		var url_ = "reports/get_user_activities_excel/"+
-				        $("#year_filter").val()+
+		var url_ = "reports/get_user_activities_excel/"+$("#year_filter").val()+
 				        "/"+$("#month_filter").val();
 		window.open(url+url_ ,'_blank'); 
         			

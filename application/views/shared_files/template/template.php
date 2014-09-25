@@ -25,6 +25,8 @@ if (!$this -> session -> userdata('user_id')) {
 	<link href="<?php echo base_url().'assets/datatable/TableTools.css'?>" type="text/css" rel="stylesheet"/>
 	<link href="<?php echo base_url().'assets/datatable/dataTables.bootstrap.css'?>" type="text/css" rel="stylesheet"/>
 	<script src="<?php echo base_url().'assets/scripts/pace.js'?>" type="text/javascript"></script>
+	<script src="<?php echo base_url().'assets/scripts/highcharts.js'?>" type="text/javascript"></script>
+  
   <link href="<?php echo base_url().'assets/bower_components/intro.js/introjs.css'?>" type="text/css" rel="stylesheet"/>
 	<!-- <link href="<?php echo base_url().'assets/metro-bootstrap/docs/font-awesome.css'?>" type="text/css" rel="stylesheet"/>
     <link href="<?php echo base_url().'assets/metro-bootstrap/css/metro-bootstrap.css'?>" type="text/css" rel="stylesheet"/>
@@ -464,7 +466,6 @@ return i;
    <script src="<?php echo base_url().'assets/boot-strap3/js/bootstrap.min.js'?>" type="text/javascript"></script>
     <!-- Bootstrap core JavaScript===================== -->	
   <script src="<?php echo base_url().'assets/scripts/jquery-ui-1.10.4.custom.min.js'?>" type="text/javascript"></script>
-  <script src="<?php echo base_url().'assets/scripts/highcharts.js'?>" type="text/javascript"></script>
    <script src="<?php echo base_url().'assets/scripts/exporting.js'?>" type="text/javascript"></script>
   <script src="<?php echo base_url().'assets/scripts/jquery.floatThead.min.js'?>" type="text/javascript"></script>	
   <!-- Placed at the end of the document so the pages load faster -->

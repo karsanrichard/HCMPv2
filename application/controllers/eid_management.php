@@ -2,13 +2,14 @@
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
-
+ 
 include_once ('home_controller.php');
 
 class Eid_Management extends Home_controller {
 
     function __construct() {
         parent::__construct();
+		$this -> load -> library(array('PHPExcel/PHPExcel','mpdf/mpdf'));
     }
 	
 	function index(){
@@ -16,20 +17,27 @@ class Eid_Management extends Home_controller {
 		$data['labs'] = $this ->getLabs();
 		$last_period =strtoupper(date('M  Y',strtotime("-1 month")));
 		$data['last_period'] = $last_period;
-		$data['lab_submissions'] = $this ->getLabSubmissions();
+		$labSubmissions = $this ->getLabSubmissions();
+		$data['lab_submissions'] = $labSubmissions['submission_details'];
+		$data['submission_rate'] = $labSubmissions['submission_rate'];
+		$extras = $this ->getSubmissionYears("submission_report");
+		$data['years'] = $extras['years'];
+		$data['labs'] =  $extras['labs'];
 		$data['banner_text'] = 'EID / VL Home';
         $data['content_view'] = 'eid/home_v';
         $data['title'] = 'EID/VL';
         $this->load->view("eid/template", $data);
 		
-		
+
 	}
 	function home(){
 		$data = array();
 		$data['labs'] = $this ->getLabs();
 		$last_period =strtoupper(date('M  Y',strtotime("-1 month")));
 		$data['last_period'] = $last_period;
-		$data['lab_submissions'] = $this ->getLabSubmissions();
+		$labSubmissions = $this ->getLabSubmissions();
+		$data['lab_submissions'] = $labSubmissions['submission_details'];
+		$data['submission_rate'] = $labSubmissions['submission_rate'];
 		$this ->load ->view('eid/home_v',$data);
 	}
 	
@@ -44,6 +52,66 @@ class Eid_Management extends Home_controller {
 		$dd=$labquery ->result_array();
 		$labname=$dd[0]['name'];
 		return $labname;
+	}
+	
+	function getSubmissionYears(){
+		$data = array();
+		//Max year 
+		$sql = "SELECT MAX(t.yearofrecordset) as max_year
+			FROM
+			(SELECT yearofrecordset FROM `eid_abbottprocurement` 
+					UNION SELECT yearofrecordset FROM `eid_taqmanprocurement` 
+			) AS t";
+		$query = $this ->db ->query($sql);
+		$result = $query ->result_array();
+		$max_year = $result[0]['max_year'];
+		//Min year
+		$sql = "SELECT MIN(t.yearofrecordset) as min_year
+			FROM
+			(SELECT yearofrecordset FROM `eid_abbottprocurement` 
+					UNION SELECT yearofrecordset FROM `eid_taqmanprocurement` 
+			) AS t";
+			$query = $this ->db ->query($sql);
+		$result = $query ->result_array();
+		$min_year = $result[0]['min_year'];
+		
+		$years = range ($max_year, $min_year); 
+		
+		//List of labs
+		$sql = "SELECT id,name FROM `eid_labs`";
+		$query = $this ->db ->query($sql);
+		$result = $query ->result_array();
+		$data["labs"] = $result;
+		$data['years'] = $years;
+		return $data;
+	}
+	
+	function getApprovedLabs(){//Get approved labs for a certain period
+		$month = $this ->input ->post("month");
+		$year = $this ->input ->post("year");
+		$sql = "SELECT COUNT(taq.id) as total_test, taq.received,l.name,l.id as lab_id FROM `eid_taqmanprocurement` taq
+				LEFT JOIN eid_labs l ON l.id = taq.lab
+				WHERE 
+				taq.monthofrecordset='$month' and taq.yearofrecordset='$year' 
+				AND received = 1
+				GROUP BY taq.lab";	
+		$query = $this ->db ->query($sql);
+		$result = $query ->result_array();
+		if(count($result)==0){
+			echo '<div class="alert alert-warning">
+					<span class="label label-warning">NOTE!</span>
+					<span> No data available for download for this period </span>
+				  </div>';
+		}
+		$data = '<table class="table table-bordered table-striped table-hover">';
+		foreach ($result as $key => $value) {
+			if($value['total_test']<2){//Only get labs that have both EID and VL  approved
+				continue;
+			}
+			$data .= '<tr><td>'.strtoupper($value['name']).'</td><td><a href="'.base_url().'eid_management/downloadreportbylab/'.$value['lab_id'].'/'.$month.'/'.$year.'/"><i class="fa fa-download"></i> Download</a></td></tr>';
+		}
+		$data .= '</table>';
+		echo $data;
 	}
 	
 	function menus($type ="submission_tracking"){
@@ -184,6 +252,7 @@ class Eid_Management extends Home_controller {
 	
 	function lab_submission ($lab_id){
 		$month = date('m');
+		$lab_name = $this ->GetLab($lab_id);
 		$lastmonth = $month - 1;
 		if ($lastmonth == '0'){
 			$lastmonth = 12;
@@ -213,7 +282,8 @@ class Eid_Management extends Home_controller {
 		$kisumu_showview = '';
 		$approved = '';
 		$kisumu_kit_imgtype = 'red';
-		
+		$need_approval = '';
+		$has_submitted = 0;
 			if ( ($cpplatabb > 0) && ($cpplattaq > 0) ){//..lab has both abbott and taqman
 				//.taqman
 				$lab_detail_submission = $this ->lab_both_taqman_abbot_report_submission($lab_id, $year, $lastmonth);
@@ -225,15 +295,19 @@ class Eid_Management extends Home_controller {
 					$kisumu_kit_imgtype = 'green';
 					
 					if ( ($ctchecktaq == 0) and ($ctcheckabb == 0) ){ //..if both taqman & abbott have been received at SCMS / KEMSA
-					    $kisumu_showview = '<small><img src="'.base_url().'assets/img//arrow.gif" alt="..">&nbsp;<u><a class="btn_approve" href="'.base_url().'eid_management/consumption/2/'.$lab_id.'/'.$lastmonth.'/'.$year.'">Approve</a></u></small>';
+					    $kisumu_showview = '<span class="badge badge-warning badge-report-action approve-lab faa-flash animated" data-labname="'.$lab_name.'" data-ref="2/'.$lab_id.'/'.$lastmonth.'/'.$year.'>Approve</span>';
 						$approved = '0';
-						
+						$has_submitted = 1;
+						//$need_approval = 'faa-flash animated';
 					}else if ( ($ctchecktaq > 0) and ($ctcheckabb > 0) ){ //..if both taqman & abbott have been received at SCMS / KEMSA
 						$approved = '1';
-                        $kisumu_showview = '<br><small>Approved</small>';
+						$has_submitted = 1;
+                        $kisumu_showview = '<span class="badge badge-info badge-report-action">Approved</span>';
                     }         
 				}else{//..show red
+					$kisumu_showview = '<span class="badge badge-danger badge-report-action">Not submitted</span>';
 					$kisumu_kit_imgtype = 'red';
+					$has_submitted = 0;
 				}
 			
 			}else {
@@ -261,13 +335,18 @@ class Eid_Management extends Home_controller {
 				$kisumu_kit_imgtype = 'green';
 				
 				if  ($ctchecktaq == 0){ //..if both taqman & abbott have been received at SCMS / KEMSA
-				    $kisumu_showview = '<small><img src="'.base_url().'assets/img//arrow.gif" alt="..">&nbsp;<u><a class="btn_approve" href="'.base_url().'eid_management/consumption/2/'.$lab_id.'/'.$lastmonth.'/'.$year.'">Approve</a></u></small>';
+				    $kisumu_showview = '<span class="badge badge-warning badge-report-action approve-lab faa-flash animated" data-labname="'.$lab_name.'" data-ref="2/'.$lab_id.'/'.$lastmonth.'/'.$year.'">Approve</span>';
 					$approved = '0';
+					$has_submitted = 1;
+					//$need_approval = 'faa-flash animated';
 				}else if ($ctchecktaq > 0){  //..if both taqman & abbott have been received at SCMS / KEMSA     
-					$kisumu_showview = '<br><small>Approved</small>';
+					$kisumu_showview = '<span class="badge badge-info badge-report-action">Approved</span>';
 	                $approved = '1';
+	                $has_submitted = 1;
 				}else{//..show red
 					$kisumu_kit_imgtype = 'red';
+					$kisumu_showview = '<span class="badge badge-danger badge-report-action">Not submitted</span>';
+					$has_submitted = 0;
 	            }
 	        }
 	        
@@ -275,14 +354,16 @@ class Eid_Management extends Home_controller {
 	        $display = array(
 	            'show_view' => $kisumu_showview,
 	            'kisumu_kit_imgtype' => $kisumu_kit_imgtype,
-	            'approved' => $approved
+	            'approved' => $approved,
+	            'has_submitted' =>$has_submitted,
+	            'need_approval' =>$need_approval
 	        );
 	        
 	        //print_r($display);
 	        return $display;
 	}
 	
-	function consumption($left='',$lab='',$lastmonth='',$year=''){
+	function consumption($left='',$lab='',$lastmonth='',$year='',$approve_plat=''){
 		$data = array();
 		$approve_left		= $left; 
 		$approve_lab		= $lab;
@@ -305,8 +386,8 @@ class Eid_Management extends Home_controller {
 		else if ($approve_lastmonth == 12) 	{ $monthname = 'DEC'; $lastmonthname = 'NOV';}
 		
 		if 		($approve_left == 2) 						   {$plat = 1; $left = 'TAQMAN & ABBOTT'; $formaction = 'eid_management/approve/approvetaqmanreport';}
-		else if (($approve_left == 1) and ($approve_plat = 1)) {$plat = 1; $left = 'TAQMAN';  $formaction = 'eid_management/approve/approvetaqmanreport';}
-		else if (($approve_left == 1) and ($approve_plat = 2)) {$plat = 2; $left = 'ABBOTT';  $formaction = 'eid_management/approve/approveabbottreport';}
+		else if (($approve_left == 1) and (@$approve_plat = 1)) {$plat = 1; $left = 'TAQMAN';  $formaction = 'eid_management/approve/approvetaqmanreport';}
+		else if (($approve_left == 1) and (@$approve_plat = 2)) {$plat = 2; $left = 'ABBOTT';  $formaction = 'eid_management/approve/approveabbottreport';}
 		
 		$data['formaction'] = $formaction;
 		$data['approve_left'] = $approve_left;
@@ -323,49 +404,71 @@ class Eid_Management extends Home_controller {
 	
 	function getLabSubmissions(){
 		$labs = $this ->getLabs();
-		$data = '<li class="divider"></li>';
+		$data = '';
+		$data['total_submissions'] = 0;
+		$total_submitted = 0;
 		foreach ($labs as $key => $value) {
 			$id = $value['id'];
 			$lab = $this ->lab_submission($id);
-			$data .='<li class="side_menu">
-						<div class="row-fluid">
-							<div class="span2">'.$lab['show_view'].'</div>
-							<div class="span2"><img src="'.base_url().'assets/img//'.$lab['kisumu_kit_imgtype'].'.gif" width="20" /></div>
-							<div class="span8 submission_title" title="'.$value['name'].'">'.$value['labname'].'</div>
-						</div>
-					</li>
-					<li class="divider"></li>';
+			$total_submitted = $total_submitted + $lab['has_submitted'];
+			
+			$data['submission_details'] .='
+					<a href="">
+						<span class="title"><i class="fa fa-arrow-right '.$lab['need_approval'].'"></i> '.strtoupper($value['labname']).' </span>
+						'.$lab['show_view'].'
+					</a>';
 		}
+		$data['submission_rate'] =$total_submitted .'/'.($key+1);
 		return $data;
 	}
 			
 			
 	
-	function displayconsumption(){
-		
-		$data = array();
-		$lab  = $this ->input ->post("testinglab");
-		$data['labname'] = $this ->input ->post("lab_name");
-		$platform 	= $this ->input ->post("platform");
-		$lastmonth = $this ->input ->post("month");
-		$monthname = date("M", mktime(0, 0, 0, $lastmonth));
-		
-		$year = $this ->input ->post("monthyear");
-		$report_text = $this ->input ->post("report_text");
-		$data['report_text'] = $report_text;
-		$data['monthname'] = $monthname;
-		$data['year'] = $year;
-		$data['lastmonth'] = $lastmonth;
-		$data['lab'] = $lab;
-		
-		$qualkitused = 0;
-		$vqualkitused = 0;
-				
+	function displayconsumption($type="update",$d_lab_id="",$d_month="",$d_year="",$d_platform="1",$d_type="bylab"){
+		$allocate_columns_taqman = "";	
+		$allocate_columns_abbott = "";
+		if($type=="download"){//If donwload reports
+			$lab = $d_lab_id;
+			$lastmonth = $d_month;
+			$year = $d_year;
+			$platform = $d_platform;
+			$data['labname'] = $this ->GetLab($lab);
+			$data['plat'] = $d_platform;
+			$monthname = date("M", mktime(0, 0, 0, $lastmonth));
+			$data['monthname'] = $monthname;
+			$data['year'] = $year;
+			$data['lastmonth'] = $lastmonth;
+			
+			$allocate_columns_taqman = " ,allocatequalkit ,allocatespexagent,allocateampinput,allocateampflapless,allocateampwash,allocateampktips,allocatektubes";
+			$allocate_columns_abbott = " ,allocatequalkit,allocatecalibration,allocatecontrol,allocatebuffer,allocatepreparation,allocateadhesive,allocatedeepplate,allocatemixtube,allocatereactionvessels,allocatereagent,allocatereactionplate,allocate1000disposable,allocate200disposable";
+			
+		}elseif($type="update"){//If viewing consumption for approval
+			$data = array();
+			$lab  = $this ->input ->post("testinglab");
+			$data['labname'] = $this ->input ->post("lab_name");
+			$platform 	= $this ->input ->post("platform");
+			$lastmonth = $this ->input ->post("month");
+			$monthname = date("M", mktime(0, 0, 0, $lastmonth));
+			
+			$year = $this ->input ->post("monthyear");
+			$report_text = $this ->input ->post("report_text");
+			$data['report_text'] = $report_text;
+			$data['monthname'] = $monthname;
+			$data['year'] = $year;
+			$data['lastmonth'] = $lastmonth;
+			$data['lab'] = $lab;
+			
+			$qualkitused = 0;
+			$vqualkitused = 0;
+					
+			
+			$data['approval'] = @$this ->input ->post("approval");//Check if load page for approval
+			//echo $data['approval'].' '.$platform;die();
+		}
 		$previousmonth = date('n', strtotime(date($year.'-'.$lastmonth, mktime()) . " - 1 months"));//..eg if current month = May; submission should be for Apr; opening balance Apr should be end bal Mar
 		$pyear = date('Y', strtotime(date($year.'-'.$lastmonth, mktime()) . " - 1 months"));
 		
-		$data['approval'] = @$this ->input ->post("approval");//Check if load page for approval
-		
+			
 		//TAQMAN
 		if($platform==1){
 			$openingqualkit		=0;
@@ -377,7 +480,7 @@ class Eid_Management extends Home_controller {
 			$openingktubes		=0;
 			$openingconsumables	=0;
 			 
-			$openingquery=$this -> db ->query("SELECT endingqualkit, endingspexagent, endingampinput, endingampflapless, endingampktips, endingampwash, endingktubes, endingconsumables from `eid_taqmanprocurement` where monthofrecordset = '$previousmonth' and testtype = 1 and lab='$lab' and yearofrecordset='$pyear'") ; 
+			$openingquery=$this -> db ->query("SELECT endingqualkit, endingspexagent, endingampinput, endingampflapless, endingampktips, endingampwash, endingktubes, endingconsumables from `eid_taqmanprocurement` where monthofrecordset = '$previousmonth' and testtype = 1 and lab='$lab' and yearofrecordset='$pyear'") ; //EID
 			$opening = $openingquery ->result_array(); 
 			
 			if(count($opening)>0){
@@ -417,11 +520,13 @@ class Eid_Management extends Home_controller {
 			}
 			
 			
+			
+			
 			//..end -> get the opening balances to display
 	
 			//..get the actual items for the tables
 			//..EID ITEMS
-			$taqman_info_a			=$this -> db ->query("select testsdone, endingqualkit, endingspexagent, endingampinput, endingampflapless, endingampktips, endingampwash, endingktubes, endingconsumables, wastedqualkit, wastedspexagent, wastedampinput, wastedampflapless, wastedampktips, wastedampwash, wastedktubes, wastedconsumables, issuedqualkit, issuedspexagent, issuedampinput, issuedampflapless, issuedampktips, issuedampwash, issuedktubes, issuedconsumables, requestqualkit, requestspexagent, requestampinput, requestampflapless, requestampktips, requestampwash, requestktubes, requestconsumables, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments, approve  from `eid_taqmanprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='1' and lab='$lab'");
+			$taqman_info_a			=$this -> db ->query("select testsdone, endingqualkit, endingspexagent, endingampinput, endingampflapless, endingampktips, endingampwash, endingktubes, endingconsumables, wastedqualkit, wastedspexagent, wastedampinput, wastedampflapless, wastedampktips, wastedampwash, wastedktubes, wastedconsumables, issuedqualkit, issuedspexagent, issuedampinput, issuedampflapless, issuedampktips, issuedampwash, issuedktubes, issuedconsumables, requestqualkit, requestspexagent, requestampinput, requestampflapless, requestampktips, requestampwash, requestktubes, requestconsumables, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments, approve $allocate_columns_taqman  from `eid_taqmanprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='1' and lab='$lab'");
 			$taqman_info_result_a	=$taqman_info_a ->result_array();
 			
 			//Initialize variables
@@ -483,6 +588,18 @@ class Eid_Management extends Home_controller {
 				$datesubmitted	= $taqman_info_result_a[0]['datesubmitted'];
 				$datesubmitted	= date("d-M-Y",strtotime($datesubmitted));
 				$approve		= $taqman_info_result_a[0]['approve'];
+				
+				//Allocate
+				if($type=="download" || $type=="view"){
+					$data['aqualkit'] 		= $taqman_info_result_a[0]['allocatequalkit'];
+					$data['aspexagent'] 	= $taqman_info_result_a[0]['allocatespexagent'];
+					$data['aampinput']		= $taqman_info_result_a[0]['allocateampinput'];
+					$data['aampflapless']	= $taqman_info_result_a[0]['allocateampflapless'];
+					$data['aampktips']		= $taqman_info_result_a[0]['allocateampktips'];
+					$data['aampwash']		= $taqman_info_result_a[0]['allocateampwash'];
+					$data['aktubes']		= $taqman_info_result_a[0]['allocatektubes'];
+					$data['aconsumables']	= $taqman_info_result_a[0]['allocateconsumables'];
+				}
 			}
 
 			
@@ -492,10 +609,10 @@ class Eid_Management extends Home_controller {
 			$vwqualkit		= $vwspexagent 	= $vwampinput	= $vwampflapless	= $vwampktips= $vwampwash	= $vwktubes	= $vwconsumables	= $viqualkit		= $vispexagent 	= 
 			$viampinput		= $viampflapless	= $viampktips	= $viampwash	= $viktubes	= $viconsumables	= $vicomments	= $vrqualkit= $vrspexagent = $vrampinput= 
 			$vrampflapless	= $vrampktips	= $vrampwash	= $vrktubes	= $vrconsumables	= $vcomments	= $vsubmittedby	= $vdatesubmitted= $vapprove	= 0;				
-							
+									
 			//..VIRAL LOAD ITEMS
 			
-			$taqman_info_b			= $this -> db ->query("select testsdone, endingqualkit, endingspexagent, endingampinput, endingampflapless, endingampktips, endingampwash, endingktubes, endingconsumables, wastedqualkit, wastedspexagent, wastedampinput, wastedampflapless, wastedampktips, wastedampwash, wastedktubes, wastedconsumables, issuedqualkit, issuedspexagent, issuedampinput, issuedampflapless, issuedampktips, issuedampwash, issuedktubes, issuedconsumables, requestqualkit, requestspexagent, requestampinput, requestampflapless, requestampktips, requestampwash, requestktubes, requestconsumables, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments  from `eid_taqmanprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='2' and lab='$lab'") ;
+			$taqman_info_b			= $this -> db ->query("select testsdone, endingqualkit, endingspexagent, endingampinput, endingampflapless, endingampktips, endingampwash, endingktubes, endingconsumables, wastedqualkit, wastedspexagent, wastedampinput, wastedampflapless, wastedampktips, wastedampwash, wastedktubes, wastedconsumables, issuedqualkit, issuedspexagent, issuedampinput, issuedampflapless, issuedampktips, issuedampwash, issuedktubes, issuedconsumables, requestqualkit, requestspexagent, requestampinput, requestampflapless, requestampktips, requestampwash, requestktubes, requestconsumables, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments $allocate_columns_taqman  from `eid_taqmanprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='2' and lab='$lab'") ;
 			$taqman_info_result_b	= $taqman_info_b ->result_array();
 			if(count($taqman_info_result_b)>0){
 				$vtestsdone		= $taqman_info_result_b[0]['testsdone'];
@@ -546,6 +663,18 @@ class Eid_Management extends Home_controller {
 				$vrampwash		= $taqman_info_result_b[0]['requestampwash'];
 				$vrktubes		= $taqman_info_result_b[0]['requestktubes'];
 				$vrconsumables	= $taqman_info_result_b[0]['requestconsumables'];
+				
+				//Allocate
+				if($type=="download" || $type=="view"){
+					$data['vaqualkit'] 		= $taqman_info_result_b[0]['allocatequalkit'];
+					$data['vaspexagent'] 	= $taqman_info_result_b[0]['allocatespexagent'];
+					$data['vaampinput']		= $taqman_info_result_b[0]['allocateampinput'];
+					$data['vaampflapless']	= $taqman_info_result_b[0]['allocateampflapless'];
+					$data['vaampktips']		= $taqman_info_result_b[0]['allocateampktips'];
+					$data['vaampwash']		= $taqman_info_result_b[0]['allocateampwash'];
+					$data['vaktubes']		= $taqman_info_result_b[0]['allocatektubes'];
+					$data['vaconsumables']	= $taqman_info_result_b[0]['allocateconsumables'];
+				}
 				
 				$vcomments		= $taqman_info_result_b[0]['comments'];
 				$vsubmittedby	= $taqman_info_result_b[0]['submittedby'];
@@ -657,6 +786,7 @@ class Eid_Management extends Home_controller {
 			$data["platform"] = "TAQMAN";
 		
 		}elseif($platform==2){//ABOTT CONSUMPTION REPORT
+			//echo $data['approval'].' '.$platform;die();
 			//Initialize
 			$openingqualkit 		= 0;
 			$openingcalibration  	= 0;
@@ -733,7 +863,7 @@ class Eid_Management extends Home_controller {
 			
 			//..get the other items for abbott
 			//..EID
-			$abbott_info_a			= $this -> db ->query("select testsdone, endingqualkit, endingcalibration, endingcontrol, endingbuffer, endingpreparation, endingadhesive, endingdeepplate, endingmixtube, endingreactionvessels, endingreagent, endingreactionplate, ending1000disposable, ending200disposable, wastedqualkit, wastedcalibration, wastedcontrol, wastedbuffer, wastedpreparation, wastedadhesive, wasteddeepplate, wastedmixtube, wastedreactionvessels, wastedreagent, wastedreactionplate, wasted1000disposable, wasted200disposable, issuedqualkit, issuedcalibration, issuedcontrol, issuedbuffer, issuedpreparation, issuedadhesive, issueddeepplate, issuedmixtube, issuedreactionvessels, issuedreagent, issuedreactionplate, issued1000disposable, issued200disposable, requestqualkit, requestcalibration, requestcontrol, requestbuffer, requestpreparation, requestadhesive, requestdeepplate, requestmixtube, requestreactionvessels, requestreagent, requestreactionplate, request1000disposable, request200disposable, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments, approve from `eid_abbottprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='1' and lab='$lab'") or die(mysql_error());
+			$abbott_info_a			= $this -> db ->query("select testsdone, endingqualkit, endingcalibration, endingcontrol, endingbuffer, endingpreparation, endingadhesive, endingdeepplate, endingmixtube, endingreactionvessels, endingreagent, endingreactionplate, ending1000disposable, ending200disposable, wastedqualkit, wastedcalibration, wastedcontrol, wastedbuffer, wastedpreparation, wastedadhesive, wasteddeepplate, wastedmixtube, wastedreactionvessels, wastedreagent, wastedreactionplate, wasted1000disposable, wasted200disposable, issuedqualkit, issuedcalibration, issuedcontrol, issuedbuffer, issuedpreparation, issuedadhesive, issueddeepplate, issuedmixtube, issuedreactionvessels, issuedreagent, issuedreactionplate, issued1000disposable, issued200disposable, requestqualkit, requestcalibration, requestcontrol, requestbuffer, requestpreparation, requestadhesive, requestdeepplate, requestmixtube, requestreactionvessels, requestreagent, requestreactionplate, request1000disposable, request200disposable, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments, approve $allocate_columns_abbott from `eid_abbottprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='1' and lab='$lab'") or die(mysql_error());
 			$abbott_info_result_a	= $abbott_info_a ->result_array();
 			if(count($abbott_info_result_a)>0){
 				$data['testsdone']		= $abbott_info_result_a[0]['testsdone']; 
@@ -815,6 +945,22 @@ class Eid_Management extends Home_controller {
 				$data['rreactionplate']		= $abbott_info_result_a[0]['requestreactionplate'];
 				$data['r1000disposable']	= $abbott_info_result_a[0]['request1000disposable'];
 				$data['r200disposable']		= $abbott_info_result_a[0]['request200disposable'];
+				//Allocate
+				if($type=="download" || $type=="view"){
+					$data['aqualkit']			= $abbott_info_result_a[0]['allocatequalkit'];
+					$data['acalibration']		= $abbott_info_result_a[0]['allocatecalibration'];
+					$data['acontrol']			= $abbott_info_result_a[0]['allocatecontrol'];
+					$data['abuffer']			= $abbott_info_result_a[0]['allocatebuffer'];
+					$data['apreparation']		= $abbott_info_result_a[0]['allocatepreparation'];
+					$data['aadhesive']			= $abbott_info_result_a[0]['allocateadhesive'];
+					$data['adeepplate']			= $abbott_info_result_a[0]['allocatedeepplate'];
+					$data['amixtube']			= $abbott_info_result_a[0]['allocatemixtube'];
+					$data['areactionvessels']	= $abbott_info_result_a[0]['allocatereactionvessels'];
+					$data['areagent']			= $abbott_info_result_a[0]['allocatereagent'];
+					$data['areactionplate']		= $abbott_info_result_a[0]['allocatereactionplate'];
+					$data['a1000disposable']	= $abbott_info_result_a[0]['allocate1000disposable'];
+					$data['a200disposable']		= $abbott_info_result_a[0]['allocate200disposable'];
+				}	
 				
 				$data['comments']			= $abbott_info_result_a[0]['comments'];
 				$data['submittedby']		= $abbott_info_result_a[0]['submittedby'];
@@ -825,7 +971,7 @@ class Eid_Management extends Home_controller {
 			//..END -> EID
 			
 			//..VIRAL LOAD
-			$abbott_info_b			= $this -> db ->query("select testsdone, endingqualkit, endingcalibration, endingcontrol, endingbuffer, endingpreparation, endingadhesive, endingdeepplate, endingmixtube, endingreactionvessels, endingreagent, endingreactionplate, ending1000disposable, ending200disposable, wastedqualkit, wastedcalibration, wastedcontrol, wastedbuffer, wastedpreparation, wastedadhesive, wasteddeepplate, wastedmixtube, wastedreactionvessels, wastedreagent, wastedreactionplate, wasted1000disposable, wasted200disposable, issuedqualkit, issuedcalibration, issuedcontrol, issuedbuffer, issuedpreparation, issuedadhesive, issueddeepplate, issuedmixtube, issuedreactionvessels, issuedreagent, issuedreactionplate, issued1000disposable, issued200disposable, requestqualkit, requestcalibration, requestcontrol, requestbuffer, requestpreparation, requestadhesive, requestdeepplate, requestmixtube, requestreactionvessels, requestreagent, requestreactionplate, request1000disposable, request200disposable, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments from `eid_abbottprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='2' and lab='$lab'");
+			$abbott_info_b			= $this -> db ->query("select testsdone, endingqualkit, endingcalibration, endingcontrol, endingbuffer, endingpreparation, endingadhesive, endingdeepplate, endingmixtube, endingreactionvessels, endingreagent, endingreactionplate, ending1000disposable, ending200disposable, wastedqualkit, wastedcalibration, wastedcontrol, wastedbuffer, wastedpreparation, wastedadhesive, wasteddeepplate, wastedmixtube, wastedreactionvessels, wastedreagent, wastedreactionplate, wasted1000disposable, wasted200disposable, issuedqualkit, issuedcalibration, issuedcontrol, issuedbuffer, issuedpreparation, issuedadhesive, issueddeepplate, issuedmixtube, issuedreactionvessels, issuedreagent, issuedreactionplate, issued1000disposable, issued200disposable, requestqualkit, requestcalibration, requestcontrol, requestbuffer, requestpreparation, requestadhesive, requestdeepplate, requestmixtube, requestreactionvessels, requestreagent, requestreactionplate, request1000disposable, request200disposable, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments $allocate_columns_abbott from `eid_abbottprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='2' and lab='$lab'");
 			//echo "select testsdone, endingqualkit, endingcalibration, endingcontrol, endingbuffer, endingpreparation, endingadhesive, endingdeepplate, endingmixtube, endingreactionvessels, endingreagent, endingreactionplate, ending1000disposable, ending200disposable, wastedqualkit, wastedcalibration, wastedcontrol, wastedbuffer, wastedpreparation, wastedadhesive, wasteddeepplate, wastedmixtube, wastedreactionvessels, wastedreagent, wastedreactionplate, wasted1000disposable, wasted200disposable, issuedqualkit, issuedcalibration, issuedcontrol, issuedbuffer, issuedpreparation, issuedadhesive, issueddeepplate, issuedmixtube, issuedreactionvessels, issuedreagent, issuedreactionplate, issued1000disposable, issued200disposable, requestqualkit, requestcalibration, requestcontrol, requestbuffer, requestpreparation, requestadhesive, requestdeepplate, requestmixtube, requestreactionvessels, requestreagent, requestreactionplate, request1000disposable, request200disposable, monthofrecordset, yearofrecordset, datesubmitted, submittedby, comments, issuedcomments from `eid_abbottprocurement` where monthofrecordset = '$lastmonth' and yearofrecordset = '$year' and testtype ='2' and lab='$lab'";die();
 			$abbott_info_result_b	= $abbott_info_b ->result_array();
 			if(count($abbott_info_result_b)>0){
@@ -907,11 +1053,40 @@ class Eid_Management extends Home_controller {
 				$data['vrreactionplate']	= $abbott_info_result_b[0]['requestreactionplate'];
 				$data['vr1000disposable']	= $abbott_info_result_b[0]['request1000disposable'];
 				$data['vr200disposable']	= $abbott_info_result_b[0]['request200disposable'];
+				//Allocate
+				if($type=="download" || $type=="view"){
+					$data['vaqualkit']			= $abbott_info_result_b[0]['allocatequalkit'];
+					$data['vacalibration']		= $abbott_info_result_b[0]['allocatecalibration'];
+					$data['vacontrol']			= $abbott_info_result_b[0]['allocatecontrol'];
+					$data['vabuffer']			= $abbott_info_result_b[0]['allocatebuffer'];
+					$data['vapreparation']		= $abbott_info_result_b[0]['allocatepreparation'];
+					$data['vaadhesive']			= $abbott_info_result_b[0]['allocateadhesive'];
+					$data['vadeepplate']		= $abbott_info_result_b[0]['allocatedeepplate'];
+					$data['vamixtube']			= $abbott_info_result_b[0]['allocatemixtube'];
+					$data['vareactionvessels']	= $abbott_info_result_b[0]['allocatereactionvessels'];
+					$data['vareagent']			= $abbott_info_result_b[0]['allocatereagent'];
+					$data['vareactionplate']	= $abbott_info_result_b[0]['allocatereactionplate'];
+					$data['va1000disposable']	= $abbott_info_result_b[0]['allocate1000disposable'];
+					$data['va200disposable']	= $abbott_info_result_b[0]['allocate200disposable'];
+				}	
 			}
-						
+				
 			//..END -> VIRAL LOAD
 			$data["platform"] = "ABBOTT";
 			
+		}
+		if($type=="download"){//If reports are being downloaded for TAQMAN
+			$data["d_type"] = $d_type;//If downloading by plaftorm or by lab
+			if($d_platform=="1"){
+				$content['data'] = $this ->load ->view("eid/download/download_taqman",$data,TRUE);
+			}elseif($d_platform=="2"){
+				$content['data'] = $this ->load ->view("eid/download/download_abbott",$data,TRUE);
+			}
+			$content['datereceived'] =  $datesubmitted;
+			$content['labname'] =  $this ->GetLab($lab);
+			$content['monthname'] =  $monthname;
+			$content['year'] =  $year;
+			return $content;
 		}
 		if(@$this ->input ->post("approval")==1){//For approval
 			$this ->load ->view("eid/submission_report_approval",$data);
@@ -948,9 +1123,217 @@ class Eid_Management extends Home_controller {
         return $data;
 	}
 	
-	//Approval form
+	//Approve
+	function approve_reports(){
+		
+		//if($this ->input ->post("btn_approve_reports")){
+			$platform = $this ->input ->post("platform");
+			$table ="";
+			$ssmonth 	= $_POST['lastmonth'];		
+			$ssyear		= $_POST['year'];
+			$mname		= $_POST['monthname'];
+			$lab 		= $_POST['lab'];
+			$labname 	= $_POST['labname'];
+			
+			//TAQMAN Submission
+			if($platform=="TAQMAN"){
+				$table 			= "eid_taqmanprocurement";
+				$aqualkit 		= $this ->input ->post("rqualkit");
+				$aspexagent 	= $this ->input ->post("rspexagent");
+				$aampinput 		= $this ->input ->post("rampinput");
+				$aampflapless 	= $this ->input ->post("rampflapless");
+				$aampwash 		= $this ->input ->post("rampwash");
+				$aampktips		= $this ->input ->post("rampktips");
+				$aktubes 		= $this ->input ->post("rktubes");
+				//$aconsumables 	= $this ->input ->post("rconsumables");
+				$avqualkit 		= $this ->input ->post("rvqualkit");
+				$avspexagent 	= $this ->input ->post("rvspexagent");
+				$avampinput 	= $this ->input ->post("rvampinput");
+				$avampflapless 	= $this ->input ->post("rvampflapless");
+				$avampwash 		= $this ->input ->post("rvampwash");
+				$avampktips		= $this ->input ->post("rvampktips");
+				$avktubes 		= $this ->input ->post("rvktubes");
+				//$avconsumables 	= $this ->input ->post("rvconsumables");
+				$update_eid_procurement = $this ->db ->query("UPDATE $table SET received = 1,
+															allocatequalkit='$aqualkit',allocatespexagent='$aspexagent',allocateampinput='$aampinput',allocateampflapless='$aampflapless',allocateampwash='$aampwash',
+															allocateampktips='$aampktips',allocatektubes='$aktubes' WHERE monthofrecordset = '$ssmonth' AND yearofrecordset = '$ssyear' AND lab = '$lab' AND testtype='1'");
+				$update_vl_procurement = $this ->db ->query("UPDATE $table SET received = 1,
+															allocatequalkit='$avqualkit',allocatespexagent='$avspexagent',allocateampinput='$avampinput',allocateampflapless='$avampflapless',allocateampwash='$avampwash',
+															allocateampktips='$avampktips',allocatektubes='$avktubes' WHERE monthofrecordset = '$ssmonth' AND yearofrecordset = '$ssyear' AND lab = '$lab' AND testtype='2'");
+				
+				$platformquery=$this ->db ->query("SELECT abbott as abb from eid_labs where ID = '$lab' "); 
+				$platformavailable = $platformquery ->result_array(); 
+				$platformresult=$platformavailable[0]['abb'];	
+				
+				$data  = array();
+				$data['lab'] 			= $lab;
+				$data['lab_name'] 		= $labname;
+				$data['platform'] 		= $platform;//name
+				$data['month'] 			= $ssmonth;
+				$data['month_name'] 	= $mname;
+				$data['year'] 			= $ssyear;
+				$data['platformresult'] = $platformresult;
+				echo json_encode($data);die();
+			
+			}else if($platform=="ABBOTT"){
+				$table = "eid_abbottprocurement";
+				$aqualkit = $this ->input ->post("rqualkit");
+				$acalibration = $this ->input ->post("rcalibration");
+				$acontrol = $this ->input ->post("rcontrol");
+				$abuffer = $this ->input ->post("rbuffer");
+				$apreparation = $this ->input ->post("rpreparation");
+				$aadhesive = $this ->input ->post("radhesive");
+				$adeepplate = $this ->input ->post("rdeepplate");
+				$amixtube = $this ->input ->post("rmixtube");
+				$areactionvessels = $this ->input ->post("rreactionvessels");
+				$areagent = $this ->input ->post("rreagent");
+				$areactionplate = $this ->input ->post("rreactionplate");
+				$a1000disposable = $this ->input ->post("r1000disposable");
+				$a200disposable =  $this ->input ->post("r200disposable");
+				
+				$avqualkit = $this ->input ->post("rvqualkit");
+				$avcalibration = $this ->input ->post("rvcalibration");
+				$avcontrol = $this ->input ->post("rvcontrol");
+				$avbuffer = $this ->input ->post("rvbuffer");
+				$avpreparation = $this ->input ->post("rvpreparation");
+				$avadhesive = $this ->input ->post("rvadhesive");
+				$avdeepplate = $this ->input ->post("rvdeepplate");
+				$avmixtube = $this ->input ->post("rvmixtube");
+				$avreactionvessels = $this ->input ->post("rvreactionvessels");
+				$avreagent = $this ->input ->post("rvreagent");
+				$avreactionplate = $this ->input ->post("rvreactionplate");
+				$av1000disposable = $this ->input ->post("rv1000disposable");
+				$av200disposable =  $this ->input ->post("rv200disposable");
+				
+				$update_eid_procurement = $this ->db ->query("UPDATE $table SET received = 1,
+																allocatequalkit='$aqualkit',allocatecalibration='$acalibration',allocatecontrol='$acontrol',allocatebuffer='$abuffer',allocatepreparation='$apreparation',allocateadhesive='$aadhesive',
+																allocatedeepplate='$adeepplate',allocatemixtube='$amixtube',allocatereactionvessels='$areactionvessels',allocatereagent='$areagent',allocatereactionplate='$areactionplate',allocate1000disposable='$a1000disposable',
+																allocate200disposable='$a200disposable' WHERE monthofrecordset = '$ssmonth' AND yearofrecordset = '$ssyear' AND lab = '$lab' AND testtype='1'");
+				$update_vl_procurement = $this ->db ->query("UPDATE $table SET received = 1,
+																allocatequalkit='$avqualkit',allocatecalibration='$avcalibration',allocatecontrol='$avcontrol',allocatebuffer='$avbuffer',allocatepreparation='$avpreparation',allocateadhesive='$avadhesive',
+																allocatedeepplate='$avdeepplate',allocatemixtube='$avmixtube',allocatereactionvessels='$avreactionvessels',allocatereagent='$avreagent',allocatereactionplate='$avreactionplate',allocate1000disposable='$av1000disposable',
+																allocate200disposable='$av200disposable' WHERE monthofrecordset = '$ssmonth' AND yearofrecordset = '$ssyear' AND lab = '$lab' AND testtype='2'");
+				echo json_encode("success");	
+				die();
+			}
+			die();
+			// ------ END OF APPROVAL --------------
+			
+		//}
+	}
 	
+	function downloadreportbylab($lab='1',$month='8',$year='2014'){//Download approved reports
+		//echo $this ->load ->view("eid/download/download_report",'',TRUE);die();
+		$data = $this ->displayconsumption("download",$lab,$month,$year,"1");
+		$html_data = $data['data'];
+		$datereceived = $data['datereceived'];
+		$labname = $data['labname'];
+		$monthname = $data['monthname'];
+		$year = $data['year'];
+		$footer = "{DATE D j M Y }|{PAGENO}/{nb}| Date Received:$datereceived, source EID (c) 1987 -  ".date('Y');
+		$header = "<div style='text-align: center'>
+					<h3>MINISTRY OF PUBLIC HEALTH</h3>
+					<h3>NATIONAL AIDS AND STD CONTROL PROGRAM</h3>
+					<h3>TAQMAN & ABBOTT KIT CONSUMPTION REPORT FOR [ $labname $monthname $year ]</h3>
+				   </div>";
+		$filename = "Reports";
+		$this->mpdf = new mPDF('C', 'A3-L', 0, '', 5, 5, 16, 16, 9, 9, '');
+		$this->mpdf->ignore_invalid_utf8 = true;
+        $this->mpdf->WriteHTML($header);
+        $this->mpdf->defaultheaderline = 1;  
+        $this->mpdf->WriteHTML($html_data);
+        $this->mpdf->SetFooter($footer);
+		//ABBOTT
+		$this->mpdf->AddPage();
+		$data = $this ->displayconsumption("download",$lab,$month,$year,"2");
+		$html_data = $data['data'];
+		$this->mpdf->WriteHTML($html_data);
+		$this->mpdf->Output($filename,'I');die();
+		//$data = $this ->displayconsumption("download",$lab,$month,$year,"2");
+		$html_data = $data['data'];
+		$datereceived = $data['datereceived'];
+		$footer = "{DATE D j M Y }|{PAGENO}/{nb}| Date Received:$datereceived, source EID (c) 1987 -  ".date('Y');
+		$header = "";
+		$this->mpdf = new mPDF('C', 'A3-L', 0, '', 5, 5, 16, 16, 9, 9, '');
+		$this->mpdf->ignore_invalid_utf8 = true;
+        $this->mpdf->WriteHTML($header);
+        $this->mpdf->defaultheaderline = 1;  
+        $this->mpdf->WriteHTML($html_data);
+        $this->mpdf->SetFooter($footer);
+		$this->mpdf->Output($filename,'I');
+	}
 
+	function downloadreportbyplatform($month='',$year='',$platform='1',$check='1'){
+		$table = "";
+		$plat = "";
+		if($this->input->post("month") && $this->input->post("year") && $this->input->post("check")){
+			$month = $this->input->post("month");
+			$year  = $this->input->post("year");
+			$check = $this->input->post("check");
+		}
+		if($platform=="1"){
+			$table = "eid_taqmanprocurement";
+			$plat = "TAQMAN";
+		}else if($platform=="2"){
+			$table = "eid_abbottprocurement";
+			$plat = "ABBOTT";
+		}
+		$sql = "SELECT COUNT(taq.id) as total_test, taq.received,l.name,l.id as lab_id FROM `$table` taq
+				LEFT JOIN eid_labs l ON l.id = taq.lab
+				WHERE 
+				taq.monthofrecordset='$month' and taq.yearofrecordset='$year' 
+				AND received = 1
+				GROUP BY taq.lab";	
+		$query = $this ->db ->query($sql);
+		$result = $query ->result_array();
+		if(count($result)>0){
+			if($check=="1"){
+				echo '1';
+				die();
+			}
+			
+			
+			
+			foreach ($result as $key => $value) {
+				$lab = $value['lab_id'];
+				$labname = $this ->GetLab($lab);;
+				if($key>0){
+					$this->mpdf->AddPage();
+				}
+				//echo $this ->load ->view("eid/download/download_report",'',TRUE);die();
+				$data = $this ->displayconsumption("download",$lab,$month,$year,$platform,"byplatform");
+				$html_data = $data['data'];
+				if($key==0){
+					$datereceived = $data['datereceived'];
+					$monthname = $data['monthname'];
+					$year = $data['year'];
+					$header = "<div style='text-align: center; border-bottom:solid 1px #000'>
+							<img src='".base_url()."assets/img/coat_of_arms1.png'>
+							<h3 style='margin:8px;font-size:12px;'>MINISTRY OF PUBLIC HEALTH</h3>
+							<h3 style='margin:8px;font-size:12px;'>NATIONAL AIDS AND STD CONTROL PROGRAM</h3>
+							<h3 style='margin:8px;font-size:12px;'>$plat KIT CONSUMPTION REPORT FOR [ $monthname $year ]</h3>
+						   </div>";
+					$filename = "Reports";
+					$this->mpdf = new mPDF('C', 'A3-L', 0, '', 5, 5, 5, 5, 7, 9, '');
+					$this->mpdf->WriteHTML($header);
+					
+					$this->mpdf->ignore_invalid_utf8 = true;
+				}
+				//$this->mpdf->SetHeader($labname);
+				$this->mpdf->WriteHTML("<h4 style='font-size:11.5px;margin:7px;'>".$labname."</h4>");
+		        $this->mpdf->defaultheaderline = 1;  
+				$this->mpdf->WriteHTML($html_data);
+		        $this->mpdf->SetFooter($footer);
+			}
+			$this->mpdf->Output($filename,'I');
+		}else{
+			echo '<div class="alert alert-warning">
+					<span class="label label-warning">NOTE!</span>
+					<span> No data available for download for this period </span>
+				  </div>';
+		}
+		
+	}
    
 }
 

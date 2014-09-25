@@ -61,5 +61,6 @@
     });
 });
 </script>
+<div id="<?php echo $graph_id; ?>"></div>
 
 

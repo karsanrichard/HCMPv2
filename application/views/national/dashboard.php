@@ -104,6 +104,10 @@ h4{
 	.btn{
 		border-radius: 0;
 	}
+	.modal-dialog {
+		
+		width: 74%;
+	}
 	</style>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -221,7 +225,8 @@ h4{
 			<div class="col-md-6" style="border: 0px solid #036;">
 				<div class="tile" id="filter" style="height: 70px">
 					<h4>Stock Levels (M.O.S)</h4>
-					<button type="button" class="btn btn-success btn-sm" style="margin:5 0 5 12; ">Other Options</button>
+					<button id="mosgraph" type="button" data-toggle="modal" data-target="#stockmosModal" class="btn btn-success btn-sm" style="margin:5 0 5 12; ">
+						Filter Options</button>
 				</div>
 				<div class="tile" id="mos" style="height: 420px">
 					
@@ -241,7 +246,7 @@ h4{
 		<div class="col-md-6" style="border: 0px solid #036;">
 			<div class="tile" id="" style="height: 70px;border: 0px solid #036;">
 				<h4>Consumption</h4>	
-				<button type="button" class="btn btn-success btn-sm" style="margin:5 0 5 12; ">Other Options</button>
+				<button type="button" data-toggle="modal" data-target="#consumptionModal" class="btn btn-success btn-sm" style="margin:5 0 5 12; ">Other Options</button>
 				</div>
 			<div class="tile" id="consumption" style="height: 450px">
 				
@@ -249,8 +254,10 @@ h4{
 			
 		</div>
 		<div class="col-md-6" style="border: 0px solid #036;">
-			<div class="tile" id="" style="height: 100px;border: 0px solid #036;">
+			<div class="tile" id="" style="height: 70px;border: 0px solid #036;">
 					<h4>Actual Expities</h4>
+					<button type="button" data-toggle="modal" data-target="#actualeModal" class="btn btn-success btn-sm" style="margin:5 0 5 12; ">Filter Options</button>
+
 				</div>
 			<div class="tile" id="actual_ex" style="height: 450px">
 				
@@ -264,8 +271,9 @@ h4{
 		
 		
 		<div class="col-md-6" style="border: 0px solid #036;">
-			<div class="tile" id="" style="height: 100px;border: 0px solid #036;">
+			<div class="tile" id="" style="height: 70px;border: 0px solid #036;">
 				<h4>Potential Expiries</h4>	
+				<button type="button" data-toggle="modal" data-target="#actualeModal" class="btn btn-success btn-sm" style="margin:5 0 5 12; ">Filter Options</button>
 				</div>
 			<div class="tile" id="potential_ex" style="height: 450px">
 				
@@ -275,7 +283,7 @@ h4{
 		<div class="col-md-6" style="border: 0px solid #036;">
 			<div class="tile" id="" style="height: 70px;border: 0px solid #036;">
 				<h4>Cost Of Orders</h4>	
-				<button type="button" class="btn btn-success btn-sm" style="margin:5 0 5 12; ">Other Options</button>
+				<button type="button" data-toggle="modal" data-target="#orderModal" class="btn btn-success btn-sm" style="margin:5 0 5 12; ">Other Options</button>
 				</div>
 			<div class="tile" id="orders" style="height: 450px">
 				
@@ -283,15 +291,101 @@ h4{
 			
 		</div>
 	</div>
+	
+	<div class="row-fluid"style="margin-top: 12px;">
+		
+		
+		<div class="col-md-6" style="border: 0px solid #036;">
+			<div class="tile" id="" style="height: 100px;border: 0px solid #036;">
+				<h4>Order Lead time</h4>
+					<div class="panel-heading">
+       <h3 class="panel-title">Fill Rate</h3>
+       </div>
+       <div id="fill_rate">
+            <div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 80%;">
+        80%
+    </div>
+      </div>
+       </div>
+				</div>
+			<div class="tile" id="leadtime" style="height: 250px">
+				
+			</div>
+			
+		</div>
+		
+	</div>
 </div>
    	
+  <!-- Modal -->
+<div class="modal fade" id="stockmosModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Stock Levels (M.O.S)</h4>
+      </div>
+      <div class="modal-body">
+       <div class="">
+       	
+       </div>
+       <div id="mosmodalgraph">
+       	
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end Modal stockmosModal -->
+
+  <!-- Modal -->
+<div class="modal fade" id="consumptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end Modal consumptionModal -->
+
+ <!-- Modal -->
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end Modal orderModal -->
    
    
    
    <script>
    
    ajax_fill_data('Kenya/facility_breakdown_pie',"#facility_breakdown");
-   ajax_fill_data('Kenya/mos_graph',"#mos");
+   ajax_fill_data('Kenya/mos_graph/NULL/NULL/NULL/NULL/NULL/mos',"#mos");
    ajax_fill_data('Kenya/roll_out',"#roll_out");
    ajax_fill_data('Kenya/consumption',"#consumption");
    ajax_fill_data('Kenya/actual_expiries/NULL/NULL/NULL/NULL/NULL',"#actual_ex");
@@ -299,6 +393,26 @@ h4{
    ajax_fill_data('Kenya/orders',"#orders");
    ajax_fill_data('Kenya/write_dashboard_html',"#hcw_trained");
    ajax_fill_data('Kenya/facility_over_view/',"#facilities_rolled_out");
+   ajax_fill_data('Kenya/get_lead_infor/NULL/NULL/NULL/NULL/NULL',"#leadtime");
+   
+   		 $("#mosgraph").click(function() {
+    	ajax_fill_modal('Kenya/mos_graph/NULL/NULL/NULL/NULL/NULL/mosmodalgraph',"#mosmodalgraph");
+    	});
+    	
+    	function ajax_fill_modal(function_url,div){
+        var function_url =url+function_url;
+        var loading_icon=url+"assets/img/Preloader_1.gif";
+        $.ajax({
+        type: "POST",
+        url: function_url,
+        beforeSend: function() {
+        $(div).html("<img style='margin:20% 40% 0 40%;' src="+loading_icon+">");
+        },
+        success: function(msg) {
+        $(div).html(msg);
+        }
+        });
+        }  
    
    function ajax_fill_data(function_url,div){
         var function_url =url+function_url;

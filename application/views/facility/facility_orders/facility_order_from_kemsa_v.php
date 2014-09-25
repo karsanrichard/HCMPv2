@@ -2,20 +2,32 @@
  	.input-small{
  		width: 55px !important;
  	}
+ 	.row div p{
+	padding:10px;
+}
  </style>
+ <div class="container-fluid">
  <div style="width: 100%; margin: auto;">
-<span  class='label label-info' style="display: inline">Enter Order Quantity and Comment,
-Order Quantity (Quarterly) = ((Average Monthly Consumption * <div id="month" style="display: inline"> 3</div>) - Closing Stock) + AMC</span><br>
+
+<div class="row">
+		<div class="col-md-8"><p class="bg-info">
+			<span  class='' style="display: inline">
+				Enter Order Quantity and Comment,Order Quantity (Quarterly) = ((Average Monthly Consumption * <span id="month" style="display: inline"> 3</span>) - Closing Stock) + AMC</span>
+		</p></div>
+		
+	</div>
+
+
 <?php  $att=array("name"=>'myform','id'=>'myform'); echo form_open('orders/facility_new_order',$att); //?>
-<div class="row" style="padding-left: 1%;">
+<div class="row" style="padding-left: 1%;margin-bottom: 5px;">
 	<div class="col-md-2">
 	<b>*Select Ordering Frequency</b> <select class="form-control" name="order_period" id="order_period">
  	<option value="3" selected="selected">Quarterly</option>	
  	<option value="1">Monthly</option>
  	</select> 	
 	</div>
-	<div class="col-md-2">
-     <b>*Order Form Number:</b> <input type="text" class="form-control input_text" name="order_no" id="order_no" id="order_no" required="required"/>
+	<div class="col-md-1">
+     <b>*Order No:</b> <input type="text" class="form-control input_text" name="order_no" id="order_no" id="order_no" required="required"/>
 	</div>
 <div class="col-md-2">
 	 <b>*In-patient Bed Days:</b><input type="text" class="form-control  input_text" name="bed_capacity" id="bed_capacity" required="required"/>
@@ -28,7 +40,7 @@ Order Quantity (Quarterly) = ((Average Monthly Consumption * <div id="month" sty
 <input type="text" class="form-control" name="total_order_value" id="total_order_value" readonly="readonly" value="0"/>	
 <input type="hidden" id="actual_drawing_rights" name="drawing_rights" value="<?php echo $drawing_rights; ?>" />				
 </div>
-<div class="col-md-2">
+<div class="col-md-3">
 <b>Drawing Rights Available Balance(KSH) :</b>
 <input type="text" class="form-control" name="total_order_balance_value" 
 id="total_order_balance_value" readonly="readonly" value="<?php echo $drawing_rights; ?>"/>	
@@ -60,9 +72,10 @@ id="total_order_balance_value" readonly="readonly" value="<?php echo $drawing_ri
 	</tr>
 </thead>
 <tbody>
-								<?php $count=0; $thr=true; 
-								$j=count($facility_order);
-								for($i=0;$i<$j;$i++){?>
+								<?php
+								 $count=0; $thr=true; 
+							$j=count($facility_order);
+								for($i=0;$i<$j;$i++){ ?>
 						<tr>
 							<td><?php echo $facility_order[$i]['sub_category_name'];?></td>
 							<?php 
@@ -87,22 +100,22 @@ id="total_order_balance_value" readonly="readonly" value="<?php echo $drawing_ri
 							<td><?php echo $facility_order[$i]['commodity_code'];?></td>
 							<td><?php echo $facility_order[$i]['unit_size']?> </td>
 							<td><?php echo $facility_order[$i]['unit_cost']; ?> </td>
-							<td><input class="form-control input-small" readonly="readonly" type="text"<?php echo 'name="open['.$i.']"'; ?>  value="<?php echo $facility_order[$i]['opening_balance'];?>" /></td>
-							<td><input class="form-control input-small" readonly="readonly" type="text"<?php echo 'name="receipts['.$i.']"'; ?>  value="<?php echo $facility_order[$i]['total_receipts'];?>" /></td>
-							<td><input class="form-control input-small" readonly="readonly" type="text"<?php echo 'name="issues['.$i.']"'; ?>  value="<?php echo $facility_order[$i]['total_issues'];?>" /></td>
-				<td><input  class="form-control input-small" readonly="readonly" type="text"<?php echo 'name="adjustmentnve['.$i.']"'; ?> value="<?php echo $facility_order[$i]['adjustmentnve']?>" /></td>
-				<td><input class="form-control input-small" readonly="readonly" type="text"<?php echo 'name="adjustmentpve['.$i.']"'; ?> value="<?php echo $facility_order[$i]['adjustmentpve']?>" /></td>
-							<td><input class="form-control input-small" readonly="readonly" type="text"<?php echo 'name="losses['.$i.']"'; ?> value="<?php echo $facility_order[$i]['losses'] ?>" /></td>
-							<td><input class="form-control input-small" readonly="readonly" type="text"<?php echo 'name="days['.$i.']"'; ?> value="<?php echo $facility_order[$i]['days_out_of_stock'];?>" /></td>
-							<td><input class="form-control input-small closing" readonly="readonly" type="text"<?php echo 'name="closing['.$i.']"'; ?>
+							<td><input class="form-control input-small" readonly="readonly" type="text" name="open[<?php echo $i ;?>]" value="<?php echo $facility_order[$i]['opening_balance'];?>" /></td>
+							<td><input class="form-control input-small" readonly="readonly" type="text" name="receipts[<?php echo $i ;?>]" value="<?php echo $facility_order[$i]['total_receipts'];?>" /></td>
+							<td><input class="form-control input-small" readonly="readonly" type="text" name="issues[<?php echo $i ;?>]"  value="<?php echo $facility_order[$i]['total_issues'];?>" /></td>
+				<td><input  class="form-control input-small" readonly="readonly" type="text" name="adjustmentnve[<?php echo $i ;?>]"  value="<?php echo $facility_order[$i]['adjustmentnve']?>" /></td>
+				<td><input class="form-control input-small" readonly="readonly" type="text" name="adjustmentpve[<?php echo $i ;?>]"  value="<?php echo $facility_order[$i]['adjustmentpve']?>" /></td>
+							<td><input class="form-control input-small" readonly="readonly" type="text" name="losses[<?php echo $i ;?>]"  value="<?php echo $facility_order[$i]['losses'] ?>" /></td>
+							<td><input class="form-control input-small" readonly="readonly" type="text"  name="days[<?php echo $i ;?>]"  value="<?php echo $facility_order[$i]['days_out_of_stock'];?>" /></td>
+							<td><input class="form-control input-small closing" readonly="readonly" type="text" name="closing[<?php echo $i ;?>]"
 								 value="<?php echo ($facility_order[$i]['closing_stock']<0)? 0:$facility_order[$i]['closing_stock'] ;?>" /></td>
-							<td><input class="form-control input-small amc" readonly="readonly" type="text" <?php echo 'name="amc['.$i.']"'; ?> value="<?php echo $facility_order[$i]['historical'];?>" /></td>
-							<td><input class="form-control input-small suggested" readonly="readonly" type="text" <?php echo 'name="suggested['.$i.']"';?> value="0"/></td>
-							<td><input class="form-control input-small quantity" type="text" <?php echo 'name="quantity['.$i.']"';?> value="<?php $qty=$facility_order[$i]['quantity_ordered'];
+							<td><input class="form-control input-small amc" readonly="readonly" type="text" name="amc[<?php echo $i ;?>]" value="<?php echo $facility_order[$i]['historical'];?>" /></td>
+							<td><input class="form-control input-small suggested" readonly="readonly" type="text" name="suggested[<?php echo $i ;?>]"  value="0"/></td>
+							<td><input class="form-control input-small quantity" type="text" name="quantity[<?php echo $i ;?>]" value="<?php $qty=$facility_order[$i]['quantity_ordered'];
 							if($qty>0){echo $qty;} else echo 0;?>"/></td>
-							<td><input class="form-control input-small actual_quantity" readonly="readonly" type="text" <?php echo 'name="actual_quantity['.$i.']"';?> value="0"/></td>
+							<td><input class="form-control input-small actual_quantity" readonly="readonly" type="text" name="actual_quantity[<?php echo $i ;?>]" value="0"/></td>
 							<td><?php echo '<input type="text" class="form-control input-small cost" name="cost['.$i.']" value="0" readonly="yes"   />';?></td>
-							<td><input class="form-control input-small" type="text" <?php echo 'name="comment['.$i.']"' ?>  value="N/A" /></td>
+							<td><input class="form-control input-small" type="text" name="comment[<?php echo $i ;?>]" value="N/A" /></td>
 			       			</tr>						
 						<?php } $i=($i==0)? 0: $i=$i-1;
 						 echo form_close()."<script>var count=".$i."</script>"	?>
@@ -116,6 +129,7 @@ id="total_order_balance_value" readonly="readonly" value="<?php echo $drawing_ri
 <button type="button" class="btn btn-success test"><span class="glyphicon glyphicon-open"></span>Save</button></div>
 </div>
 </form>  
+</div>
 </div>
 <script>
 $(document).ready(function() {

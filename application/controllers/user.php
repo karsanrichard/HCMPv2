@@ -56,6 +56,7 @@ class User extends MY_Controller {
 			$phone = $user_data['telephone'];
 			$user_email = $user_data['email'];
 			$county_id = $user_data['county_id'];
+			$partner_id = $user_data['partner'];
 			$fullname = $fname . ' ' . $lname;
             $banner_name = '';
 			$access_level = Access_level::get_access_level_name($access_typeid);
@@ -76,7 +77,7 @@ class User extends MY_Controller {
             $banner_name = $facility_name['facility_name'];
             endif;
    
-			$session_data = array('county_id' => $county_id, 'phone_no' => $phone,
+			$session_data = array('county_id' => $county_id,'partner_id' => $partner_id, 'phone_no' => $phone,
 			'user_email' => $user_email, 'user_id' => $user_id, 'user_indicator' => $user_indicator,
 			'fname' => $fname, 'lname' => $lname, 'facility_id' => $facility_id,
 			'district_id' => $district_id, 'user_type_id' => 
